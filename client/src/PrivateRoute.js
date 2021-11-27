@@ -4,7 +4,7 @@ import { AppContext } from "./AppContext";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const { getToken } = useContext(AppContext);
-  const idToken = getToken();
+  const idToken = getToken() || "remove"; //TODO: Remove this once code is not static
   return (
     <Route
       {...rest}

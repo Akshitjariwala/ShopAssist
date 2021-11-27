@@ -11,7 +11,6 @@ import { MailOutlined, LockOutlined } from "@ant-design/icons";
 
 //! User Files
 
-import { auth } from "_firebase";
 import { toast } from "common/utils";
 import { AppContext } from "AppContext";
 import * as ActionTypes from "common/actionTypes";
@@ -27,23 +26,23 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const { push } = useHistory();
   const onFinish = async (values) => {
-    const { email, password } = values;
+    // const { email, password } = values;
     setLoading(true);
     try {
-      const userAuth = await auth.signInWithEmailAndPassword(email, password);
-      const { user } = userAuth;
-      const token = await user.getIdToken();
-      const currentUser = {
-        displayName: user.displayName,
-        email: user.email,
-        emailVerified: user.emailVerified,
-        uid: user.uid,
-        metadata: user.metadata,
-        token,
-      };
+      
+      // const currentUser = {
+      //   displayName: user.displayName,
+      //   email: user.email,
+      //   emailVerified: user.emailVerified,
+      //   uid: user.uid,
+      //   metadata: user.metadata,
+      //   token,
+      // };
+      const token = ""
+      const currentUser = ""
       dispatch({ type: ActionTypes.SET_TOKEN, data: token });
       dispatch({ type: ActionTypes.SET_CURRENT_USER, data: currentUser });
-      dispatch({ type: ActionTypes.SET_USER_ID, data: user.uid });
+      // dispatch({ type: ActionTypes.SET_USER_ID, data: user.uid });
       dispatch({ type: ActionTypes.SET_AUTHENTICATED, data: true });
       push(ROUTES.MAIN);
     } catch (err) {

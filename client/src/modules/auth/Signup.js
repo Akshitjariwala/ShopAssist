@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 //! Ant Imports
 
@@ -148,6 +148,10 @@ function Signup() {
           >
             Register
           </Button>
+          <div className="user-actions">
+            <div/>
+            <Link to={ROUTES.LOGIN}>Already a user? Login</Link>
+          </div>
         </Form.Item>
       </Form>
     </div>
