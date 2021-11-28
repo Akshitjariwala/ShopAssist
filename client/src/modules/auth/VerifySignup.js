@@ -15,7 +15,6 @@ import { toast } from "common/utils";
 import { AppContext } from "AppContext";
 import { ROUTES } from "common/constants";
 import api from "common/api";
-import Loading from "components/Loading";
 import { config } from "common/config";
 import { isEmpty } from "lodash";
 
@@ -25,71 +24,40 @@ function VerifySignup() {
   const {
     state: { authenticated },
   } = useContext(AppContext);
-  const [loading, setLoading] = useState(false);
-  const [emailVerificationCode, setEmailVerificationCode] = useState({});
   const { push, location } = useHistory();
+  const [loading, setLoading] = useState(false);
   const onFinish = async (values) => {
     const { verificationCode } = values;
-    if (
-      verificationCode.toLowerCase() === emailVerificationCode.verificationCode
-    ) {
-      const { userDetails } = location.state;
-      const username = userDetails.username;
-      const { verificationCode } = values;
+    const { name: username, email, userSub } = location.state.userDetails;
+    try {
       if (isEmpty(location.state.userDetails)) {
         push(ROUTES.LOGIN);
-      } else {
-        try {
-          const userData = {
-            username,
-            email: userDetails.email,
-            userSub: userDetails.userSub,
-            verificationCode,
-          };
-          const response = await api.post(
-            `${config.CLOUD_FUNCTION_URL}/users`,
-            userData
-          );
-          const { data } = response;
-          if (data.uid && !isEmpty(data.uid)) {
-            push(ROUTES.LOGIN);
-          }
-        } catch (err) {
-          console.log(err);
-          toast({
-            message: err.message,
-            type: "error",
-          });
-        }
       }
-    } else {
-      toast({
-        message: "Please enter correct answer!",
-        type: "error",
+      setLoading(true);
+      const response = await api.post(`${config.SERVER_URL}/signUpVerify`, {
+        username,
+        email,
+        userSub,
+        verificationCode,
       });
-    }
-  };
-
-  const fetchSecurityCode = async () => {
-    setLoading(true);
-    if (isEmpty(location.state.userDetails)) {
-      push(ROUTES.LOGIN);
-    } else {
-      const { uid, role } = location.state.userDetails;
-      try {
-        const response = await api.post(
-          "https://xhdt9h76vl.execute-api.us-east-1.amazonaws.com/Test/security-questions",
-          { uid, role }
-        );
-        setEmailVerificationCode(response.data);
-      } catch (error) {
+      const { data } = response;
+      if (data.status === "success") {
+        push(ROUTES.LOGIN);
+      } else {
         toast({
-          message: "Something went wrong",
+          message: "Security code is wrong or may be expired",
           type: "error",
         });
       }
+    } catch (err) {
+      console.log(err);
+      toast({
+        message: err.message,
+        type: "error",
+      });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -99,14 +67,15 @@ function VerifySignup() {
         push("/");
       }
     }
-    fetchSecurityCode();
+    if (isEmpty(location.state.userDetails)) {
+      push(ROUTES.LOGIN);
+    }
     return () => {
       mounted = false;
     };
     // eslint-disable-next-line
   }, [authenticated]);
 
-  if (loading) return <Loading />;
   return (
     <div className="login">
       <Title level={3} className="sdp-text-strong">

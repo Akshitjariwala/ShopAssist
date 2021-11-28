@@ -20,6 +20,7 @@ export const MODULES = {
 
 /* Authentication */
 export const TOKEN = "TOKEN";
+export const ID_TOKEN = "ID_TOKEN";
 export const USER = "USER";
 export const ADMIN = "ADMIN";
 export const USER_ID = "USER_ID";

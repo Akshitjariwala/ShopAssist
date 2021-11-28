@@ -16,7 +16,6 @@ import { AppContext } from "AppContext";
 import { REGEX, ROUTES } from "common/constants";
 import api from "common/api";
 import { config } from "common/config";
-import { isEmpty } from "lodash";
 
 const { Title } = Typography;
 
@@ -36,11 +35,14 @@ function Signup() {
         password,
       };
       const response = await api.post(
-        `${config.CLOUD_FUNCTION_URL}/users`,
+        `${config.SERVER_URL}/signUp`,
         userDetails
       );
       const { data } = response;
-      if (data.uid && !isEmpty(data.uid)) {
+      if (data?.status === "success") {
+        const { userSub } = data.result;
+        userDetails.userSub = userSub;
+        userDetails.result = data.result;
         push(ROUTES.VERIFY_SIGNUP, { userDetails });
       }
     } catch (err) {
@@ -77,7 +79,7 @@ function Signup() {
         >
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Name"
+            placeholder="Username"
           />
         </Form.Item>
         <Form.Item
