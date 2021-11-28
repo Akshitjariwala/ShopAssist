@@ -27,14 +27,13 @@ function Signup() {
   const [loading, setLoading] = useState(false);
   const { push } = useHistory();
   const onFinish = async (values) => {
-    const { displayName, email, password } = values;
+    const { name, email, password } = values;
     setLoading(true);
     try {
       const userDetails = {
-        displayName,
+        name,
         email,
         password,
-        role: "user",
       };
       const response = await api.post(
         `${config.CLOUD_FUNCTION_URL}/users`,
@@ -42,7 +41,7 @@ function Signup() {
       );
       const { data } = response;
       if (data.uid && !isEmpty(data.uid)) {
-        push(ROUTES.LOGIN);
+        push(ROUTES.VERIFY_SIGNUP, { userDetails });
       }
     } catch (err) {
       console.log(err);
@@ -73,7 +72,7 @@ function Signup() {
         onFinish={onFinish}
       >
         <Form.Item
-          name="displayName"
+          name="name"
           rules={[{ required: true, message: "Please enter your name" }]}
         >
           <Input
@@ -149,7 +148,7 @@ function Signup() {
             Register
           </Button>
           <div className="user-actions">
-            <div/>
+            <div />
             <Link to={ROUTES.LOGIN}>Already a user? Login</Link>
           </div>
         </Form.Item>
