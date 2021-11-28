@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 //! Ant Imports
 
@@ -16,7 +16,6 @@ import { AppContext } from "AppContext";
 import { REGEX, ROUTES } from "common/constants";
 import api from "common/api";
 import { config } from "common/config";
-import { isEmpty } from "lodash";
 
 const { Title } = Typography;
 
@@ -27,22 +26,24 @@ function Signup() {
   const [loading, setLoading] = useState(false);
   const { push } = useHistory();
   const onFinish = async (values) => {
-    const { displayName, email, password } = values;
+    const { name, email, password } = values;
     setLoading(true);
     try {
       const userDetails = {
-        displayName,
+        name,
         email,
         password,
-        role: "user",
       };
       const response = await api.post(
-        `${config.CLOUD_FUNCTION_URL}/users`,
+        `${config.SERVER_URL}/signUp`,
         userDetails
       );
       const { data } = response;
-      if (data.uid && !isEmpty(data.uid)) {
-        push(ROUTES.LOGIN);
+      if (data?.status === "success") {
+        const { userSub } = data.result;
+        userDetails.userSub = userSub;
+        userDetails.result = data.result;
+        push(ROUTES.VERIFY_SIGNUP, { userDetails });
       }
     } catch (err) {
       console.log(err);
@@ -73,12 +74,12 @@ function Signup() {
         onFinish={onFinish}
       >
         <Form.Item
-          name="displayName"
+          name="name"
           rules={[{ required: true, message: "Please enter your name" }]}
         >
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Name"
+            placeholder="Username"
           />
         </Form.Item>
         <Form.Item
@@ -148,6 +149,10 @@ function Signup() {
           >
             Register
           </Button>
+          <div className="user-actions">
+            <div />
+            <Link to={ROUTES.LOGIN}>Already a user? Login</Link>
+          </div>
         </Form.Item>
       </Form>
     </div>
