@@ -1,0 +1,87 @@
+//! Fix Div
+
+.sdp-fix-div {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+//! SVGs
+
+.sdp-svg {
+  width: 24px;
+  height: 24px;
+}
+
+.sdp-svg-lg {
+  width: 48px;
+  height: 48px;
+}
+
+.sdp-svg-sm {
+  width: 16px;
+  height: 16px;
+}
+
+//! Text Alignment
+
+.sdp-text-center {
+  text-align: center;
+}
+
+//! Font
+
+.sdp-text-strong {
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.sdp-font-ellipsis {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: horizontal;
+  overflow: hidden;
+}
+
+//! Scrollbar
+
+.sdp-scrollbar {
+  ::-webkit-scrollbar {
+    width: @scrollbar-width;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: @scrollbar-track-background;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: @scrollbar-color;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: @scrollbar-hover-color;
+  }
+}
+
+//! Loadig & Error
+
+.sdp-loading-wrapper,
+.sdp-error-wrapper {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sdp-404 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .ant-result-image {
+    margin: unset;
+  }
+}

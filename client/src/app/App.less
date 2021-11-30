@@ -1,0 +1,45 @@
+@import "../styles/variables";
+
+.app-layout {
+  height: 100vh;
+  .ant-layout-content {
+    padding: 1rem;
+  }
+  //* Remove this block of css, if you don't want sidebar in your app
+  .ant-layout-sider {
+    &-children {
+      .app-layout-sider-header {
+        border-bottom: 1px solid #ececec;
+        border-right: 1px solid #ececec;
+        height: 72px;
+        .app-icon-btn {
+          padding: 0 1rem;
+          height: inherit;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          .anticon {
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            svg {
+              height: inherit;
+              width: inherit;
+            }
+          }
+        }
+        .app-icon-btn-collapsed {
+          justify-content: center;
+        }
+      }
+      .app-sidebar-content {
+        .ant-menu {
+          border-right: none;
+          .ant-menu-item:first-child {
+            margin-top: 0;
+          }
+        }
+      }
+    }
+  }
+}
