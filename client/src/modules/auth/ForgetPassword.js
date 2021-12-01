@@ -39,7 +39,7 @@ function ForgetPassword() {
           type: "success",
         });
         setTimeout(() => {
-          push(ROUTES.MAIN);
+          push(ROUTES.RESET_PASSWORD);
         }, 2000);
       } else {
         toast({

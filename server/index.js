@@ -42,10 +42,10 @@ app.post("/signUp", async (req, res) => {
       return res.json({
         statusCode: 200,
         status: "success",
-        result
+        result,
       });
     }
-  })
+  });
 });
 
 app.post("/signUpVerify", async (req, res) => {
@@ -58,21 +58,25 @@ app.post("/signUpVerify", async (req, res) => {
       Pool: userPool,
     };
     let cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-    cognitoUser.confirmRegistration(verificationCode, true, function (err, result) {
-      if (err) {
-        res.json({
-          statusCode: 400,
-          status: "failure",
-          error: err
-        });
-      } else {
-        return res.json({
-          statusCode: 200,
-          status: "success",
-          result
-        });
+    cognitoUser.confirmRegistration(
+      verificationCode,
+      true,
+      function (err, result) {
+        if (err) {
+          res.json({
+            statusCode: 400,
+            status: "failure",
+            error: err,
+          });
+        } else {
+          return res.json({
+            statusCode: 200,
+            status: "success",
+            result,
+          });
+        }
       }
-    });
+    );
   } catch (err) {
     return res.json({
       statusCode: 400,
@@ -101,17 +105,15 @@ app.post("/login", async (req, res) => {
     let cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
     cognitoUser.authenticateUser(authenticationDetails, {
       onSuccess: function (result) {
-        return res.json(
-          {
-            statusCode: 200,
-            status: 'success',
-            result: {
-              accessToken: result.getAccessToken().getJwtToken(),
-              idToken: result.getIdToken().getJwtToken(),
-              refreshToken: result.getRefreshToken().getToken()
-            }
-          });
-
+        return res.json({
+          statusCode: 200,
+          status: "success",
+          result: {
+            accessToken: result.getAccessToken().getJwtToken(),
+            idToken: result.getIdToken().getJwtToken(),
+            refreshToken: result.getRefreshToken().getToken(),
+          },
+        });
       },
       onFailure: function (err) {
         return res.json({
