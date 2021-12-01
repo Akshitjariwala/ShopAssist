@@ -34,15 +34,18 @@ app.post("/signUp", async (req, res) => {
   userPool.signUp(name, password, attributeList, null, function (err, result) {
     if (err) {
       res.json({
+        statusCode: 400,
         status: "failure",
         error: err,
       });
+    } else {
+      return res.json({
+        statusCode: 200,
+        status: "success",
+        result
+      });
     }
-    return res.json({
-      status: "success",
-      result,
-    });
-  });
+  })
 });
 
 app.post("/signUpVerify", async (req, res) => {
@@ -55,24 +58,24 @@ app.post("/signUpVerify", async (req, res) => {
       Pool: userPool,
     };
     let cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-    cognitoUser.confirmRegistration(
-      verificationCode,
-      true,
-      function (err, result) {
-        if (err) {
-          res.json({
-            status: "failure",
-            error: err,
-          });
-        }
+    cognitoUser.confirmRegistration(verificationCode, true, function (err, result) {
+      if (err) {
+        res.json({
+          statusCode: 400,
+          status: "failure",
+          error: err
+        });
+      } else {
         return res.json({
+          statusCode: 200,
           status: "success",
-          result,
+          result
         });
       }
-    );
+    });
   } catch (err) {
     return res.json({
+      statusCode: 400,
       status: "failure",
       error: err,
     });
@@ -98,17 +101,21 @@ app.post("/login", async (req, res) => {
     let cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
     cognitoUser.authenticateUser(authenticationDetails, {
       onSuccess: function (result) {
-        return res.json({
-          status: "success",
-          result: {
-            accessToken: result.getAccessToken().getJwtToken(),
-            idToken: result.getIdToken().getJwtToken(),
-            refreshToken: result.getRefreshToken().getToken(),
-          },
-        });
+        return res.json(
+          {
+            statusCode: 200,
+            status: 'success',
+            result: {
+              accessToken: result.getAccessToken().getJwtToken(),
+              idToken: result.getIdToken().getJwtToken(),
+              refreshToken: result.getRefreshToken().getToken()
+            }
+          });
+
       },
       onFailure: function (err) {
         return res.json({
+          statusCode: 400,
           status: "failure",
           error: err,
         });
@@ -116,6 +123,7 @@ app.post("/login", async (req, res) => {
     });
   } catch (err) {
     return res.json({
+      statusCode: 400,
       status: "failure",
       error: err,
     });
@@ -136,12 +144,14 @@ app.post("/forgotPassword", async (req, res) => {
       onSuccess: function (result) {
         console.log("call result: " + result);
         res.json({
+          statusCode: 200,
           status: "success",
           result,
         });
       },
       onFailure: function (err) {
         res.json({
+          statusCode: 400,
           status: "failure",
           error: err,
         });
@@ -149,6 +159,7 @@ app.post("/forgotPassword", async (req, res) => {
     });
   } catch (err) {
     return res.json({
+      statusCode: 400,
       status: "failure",
       error: err,
     });
@@ -170,12 +181,14 @@ app.post("/resetPassword", async (req, res) => {
     cognitoUser.confirmPassword(verificationCode, newPassword, {
       onSuccess: function (result) {
         res.json({
+          statusCode: 200,
           status: "success",
           result,
         });
       },
       onFailure: function (err) {
         res.json({
+          statusCode: 400,
           status: "failure",
           error: err,
         });
@@ -183,6 +196,7 @@ app.post("/resetPassword", async (req, res) => {
     });
   } catch (err) {
     return res.json({
+      statusCode: 400,
       status: "failure",
       error: err,
     });
