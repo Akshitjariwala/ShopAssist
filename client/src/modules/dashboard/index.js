@@ -1,9 +1,11 @@
 import { Button } from 'antd';
 import React, { useState } from 'react';
 import { fetchProducts } from '../../service';
-import { useHistory } from "react-router-dom";
+import { useHistory, Redirect,Link } from "react-router-dom";
 import { loadIntoDatabase } from '../../service';
 import axios from 'axios';
+import { productPage } from 'modules/dashboard/productPage'
+import { ROUTES } from 'common/constants';
 var cors = require('cors');
 
 function Dashboard() {
@@ -51,6 +53,7 @@ function Dashboard() {
 
     axios.post('https://qtx9upms37.execute-api.us-east-1.amazonaws.com/default/products',productMetaData).then((result) => {
       console.log(result.data);
+      history.push(ROUTES.PRODUCTPAGE, { userID : "akshitjariwala", asin : ''}); // Add user email and asin number. 
     }).catch( (error) => {
       console.log(error);
     });

@@ -1,15 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation } from "react-router-dom";
+import React, { useState } from 'react';
 
-const ProductPage = () => {
+function ProductPage() {
 
-    
-    const history = useHistory();
-    const location = useLocation();
+    const[productTitle, setProductTitle] = useState("");
+    const[thumbnail, setThumbnail] = useState("");
+    const[price,setPrice] = useState("");
+    const[reviews,setReviews] = useState("");
+    const[stars_stat,setStartStat] = useState("");
+    const[rating,setRating] = useState("");
+    const[reviewCount,setReviewCount] = useState("");
 
-    useEffect(() => {
-        setProductList(history.location.state.products);
-    });
-} 
+    return (
+        <div>
+            <div class="container">
+                <h2> {productTitle} </h2>
+            </div>
+            <button>Review Analysis</button>
+            <button>Rating visulization</button>
+        </div>
+    );
+
+}
 
 export default ProductPage;

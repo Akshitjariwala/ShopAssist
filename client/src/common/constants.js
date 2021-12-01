@@ -8,6 +8,7 @@ export const ROUTES = {
   USERS_MANAGEMENT: "/users",
   UPLOAD_VIDEO: "/upload-video",
   VIDEOS: "/videos",
+  PRODUCTPAGE: "/product"
 };
 
 /*  Modules */
