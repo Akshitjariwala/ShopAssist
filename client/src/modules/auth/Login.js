@@ -59,9 +59,17 @@ function Login() {
         });
         dispatch({ type: ActionTypes.SET_AUTHENTICATED, data: true });
         push(ROUTES.MAIN);
+      } else if (
+        data.status === "failure" &&
+        data.error.name === "UserNotConfirmedException"
+      ) {
+        const userDetails = {
+          email,
+        };
+        push(ROUTES.VERIFY_SIGNUP, { userDetails });
       } else {
         toast({
-          message: "Email and/or password is wrong",
+          message: "Email or password is wrong",
           type: "error",
         });
       }

@@ -28,16 +28,14 @@ function VerifySignup() {
   const [loading, setLoading] = useState(false);
   const onFinish = async (values) => {
     const { verificationCode } = values;
-    const { name: username, email, userSub } = location.state.userDetails;
+    const { email } = location.state.userDetails;
     try {
       if (isEmpty(location.state.userDetails)) {
         push(ROUTES.LOGIN);
       }
       setLoading(true);
       const response = await api.post(`${config.SERVER_URL}/signUpVerify`, {
-        username,
         email,
-        userSub,
         verificationCode,
       });
       const { data } = response;

@@ -6,6 +6,7 @@ export const ROUTES = {
   REGISTER: "/register",
   VERIFY_SIGNUP: "/verify-signup",
   FORGET_PASSWORD: "/forget-password",
+  RESET_PASSWORD: "/reset-password",
   USERS_MANAGEMENT: "/users",
   UPLOAD_VIDEO: "/upload-video",
   VIDEOS: "/videos",
