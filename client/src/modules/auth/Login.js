@@ -61,7 +61,7 @@ function Login() {
         push(ROUTES.MAIN);
       } else {
         toast({
-          message: "Email and/or password is wrong",
+          message: "Email or password is wrong",
           type: "error",
         });
       }

@@ -44,6 +44,18 @@ function Signup() {
         userDetails.userSub = userSub;
         userDetails.result = data.result;
         push(ROUTES.VERIFY_SIGNUP, { userDetails });
+      } else if (data?.status === "failure") {
+        if (data.error.name === "InvalidPasswordException") {
+          toast({
+            message: "Please use strong password",
+            type: "error",
+          });
+        } else {
+          toast({
+            message: "Username or email already exists",
+            type: "error",
+          });
+        }
       }
     } catch (err) {
       console.log(err);
