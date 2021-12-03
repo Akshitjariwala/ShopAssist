@@ -9,10 +9,16 @@ export const fetchProducts = (productName) => {
 };
 
 export const loadIntoDatabase = (payload) => {
-    console.log(payload);
     return axios.post('http://localhost:8080/LoadDatabase',{data : payload})
     .then((res) => {
         return res;
     })
     .catch(err => { return err.response}) 
+}
+
+export const fetchSentiment = (payload) => {
+    return axios.post('http://localhost:8080/FetchSentiment',{data : payload})
+    .then((res) => {
+        return res;
+    });
 }
