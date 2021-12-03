@@ -5,6 +5,7 @@ app.use(express.json());
 const port = 8080;
 const cors = require("cors");
 const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
+const AWS = require('aws-sdk');
 
 const { appConfig } = require("./config");
 const service = require("./service");
@@ -77,6 +78,39 @@ app.post("/signUpVerify", async (req, res) => {
         }
       }
     );
+  } catch (err) {
+    return res.json({
+      statusCode: 400,
+      status: "failure",
+      error: err,
+    });
+  }
+});
+
+app.post("/resendConfirmationCode", async (req, res) => {
+  try {
+    let email = req.body.email;
+
+    const params = {
+      ClientId: appConfig.ClientId,
+      Username: email,
+    };
+    const client = new AWS.CognitoIdentityServiceProvider({ region: "us-east-1" });
+    const result = await client.resendConfirmationCode(params, function (err, result) {
+      if (err) {
+        res.json({
+          statusCode: 400,
+          status: "failure",
+          error: err
+        });
+      } else {
+        return res.json({
+          statusCode: 200,
+          status: "success",
+          result
+        });
+      }
+    });
   } catch (err) {
     return res.json({
       statusCode: 400,

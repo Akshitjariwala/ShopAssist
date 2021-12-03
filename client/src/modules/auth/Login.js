@@ -66,7 +66,7 @@ function Login() {
         const userDetails = {
           email,
         };
-        push(ROUTES.VERIFY_SIGNUP, { userDetails });
+        push(ROUTES.RESEND_CODE, { userDetails });
       } else {
         toast({
           message: "Email or password is wrong",
