@@ -11,6 +11,9 @@ import Logout from "modules/auth/Logout";
 import PrivateRoute from "./PrivateRoute";
 import Signup from "modules/auth/Signup";
 import ForgetPassword from "modules/auth/ForgetPassword";
+import VerifySignup from "modules/auth/VerifySignup";
+import ResetPassword from "modules/auth/ResetPassword";
+import ResendConfirmationCode from "modules/auth/ResendConfirmationCode";
 
 const Routes = () => {
   const { initializeAuth } = useContext(AppContext);
@@ -25,7 +28,14 @@ const Routes = () => {
       <Switch>
         <Route exact path={ROUTES.LOGIN} component={Login} />
         <Route exact path={ROUTES.REGISTER} component={Signup} />
+        <Route exact path={ROUTES.VERIFY_SIGNUP} component={VerifySignup} />
         <Route exact path={ROUTES.FORGET_PASSWORD} component={ForgetPassword} />
+        <Route exact path={ROUTES.RESET_PASSWORD} component={ResetPassword} />
+        <Route
+          exact
+          path={ROUTES.RESEND_CODE}
+          component={ResendConfirmationCode}
+        />
         <Route exact path={ROUTES.LOGOUT} component={Logout} />
         <PrivateRoute path="/" component={App} />
       </Switch>

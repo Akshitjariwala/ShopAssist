@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-import React, { useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-=======
 import { useContext, useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
->>>>>>> 2703a3f2fbab64248a6b0517425995fb66887097
 
 //! Ant Imports
 
@@ -12,55 +7,47 @@ import { Form, Input, Button, Typography } from "antd";
 
 //! Ant Icons
 
-import { MailOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
+import { LockOutlined, MailOutlined } from "@ant-design/icons";
 
 //! User Files
 
 import { toast } from "common/utils";
 import { AppContext } from "AppContext";
-import { REGEX, ROUTES } from "common/constants";
+import { ROUTES, REGEX } from "common/constants";
 import api from "common/api";
 import { config } from "common/config";
 
 const { Title } = Typography;
 
-function Signup() {
+function ResetPassword() {
   const {
     state: { authenticated },
   } = useContext(AppContext);
-  const [loading, setLoading] = useState(false);
   const { push } = useHistory();
+  const [loading, setLoading] = useState(false);
   const onFinish = async (values) => {
-    const { name, email, password } = values;
-    setLoading(true);
+    const { email, verificationCode, password } = values;
     try {
-      const userDetails = {
-        name,
+      setLoading(true);
+      const response = await api.post(`${config.SERVER_URL}/resetPassword`, {
         email,
-        password,
-      };
-      const response = await api.post(
-        `${config.SERVER_URL}/signUp`,
-        userDetails
-      );
+        verificationCode,
+        newPassword: password,
+      });
       const { data } = response;
-      if (data?.status === "success") {
-        const { userSub } = data.result;
-        userDetails.userSub = userSub;
-        userDetails.result = data.result;
-        push(ROUTES.VERIFY_SIGNUP, { userDetails });
-      } else if (data?.status === "failure") {
-        if (data.error.name === "InvalidPasswordException") {
-          toast({
-            message: "Please use strong password",
-            type: "error",
-          });
-        } else {
-          toast({
-            message: "Username or email already exists",
-            type: "error",
-          });
-        }
+      if (data.status === "success") {
+        toast({
+          message: "Password changed successfully",
+          type: "success",
+        });
+        setTimeout(() => {
+          push(ROUTES.LOGIN);
+        }, 2000);
+      } else {
+        toast({
+          message: "Security code is wrong or may be expired",
+          type: "error",
+        });
       }
     } catch (err) {
       console.log(err);
@@ -68,14 +55,21 @@ function Signup() {
         message: err.message,
         type: "error",
       });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
+    let mounted = true;
     if (authenticated) {
-      push("/");
+      if (mounted) {
+        push("/");
+      }
     }
+    return () => {
+      mounted = false;
+    };
     // eslint-disable-next-line
   }, [authenticated]);
 
@@ -90,15 +84,6 @@ function Signup() {
         initialValues={{ remember: true }}
         onFinish={onFinish}
       >
-        <Form.Item
-          name="name"
-          rules={[{ required: true, message: "Please enter your name" }]}
-        >
-          <Input
-            prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Username"
-          />
-        </Form.Item>
         <Form.Item
           name="email"
           rules={[
@@ -115,6 +100,17 @@ function Signup() {
           />
         </Form.Item>
         <Form.Item
+          name="verificationCode"
+          rules={[
+            { required: true, message: "Please enter verification code" },
+          ]}
+        >
+          <Input
+            prefix={<LockOutlined className="site-form-item-icon" />}
+            placeholder="Security Code"
+          />
+        </Form.Item>
+        <Form.Item
           name="password"
           rules={[
             { required: true, message: "Please enter your password!" },
@@ -128,7 +124,7 @@ function Signup() {
           <Input.Password
             prefix={<LockOutlined className="site-form-item-icon" />}
             type="password"
-            placeholder="Password"
+            placeholder="New Password"
           />
         </Form.Item>
         <Form.Item
@@ -154,7 +150,7 @@ function Signup() {
           <Input.Password
             prefix={<LockOutlined className="site-form-item-icon" />}
             type="password"
-            placeholder="Confirm Password"
+            placeholder="Confirm New Password"
           />
         </Form.Item>
         <Form.Item>
@@ -164,7 +160,7 @@ function Signup() {
             htmlType="submit"
             className="login-form-button"
           >
-            Register
+            Confirm
           </Button>
           <div className="user-actions">
             <div />
@@ -176,4 +172,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default ResetPassword;

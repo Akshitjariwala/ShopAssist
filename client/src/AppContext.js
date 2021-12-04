@@ -4,7 +4,7 @@ import React, { createContext, useReducer } from "react";
 
 import * as ActionTypes from "common/actionTypes";
 import api from "common/api";
-import { TOKEN, USER, USER_ID } from "common/constants";
+import { ID_TOKEN, TOKEN, USER, USER_ID } from "common/constants";
 
 const getLoggedInUser = () => {
   let loggedInUser = localStorage.getItem(USER);
@@ -20,6 +20,7 @@ const initialState = {
   currentUser: getLoggedInUser() || {},
   userId: getUserId(),
   authToken: localStorage.getItem(TOKEN),
+  idToken: localStorage.getItem(ID_TOKEN),
   authenticated: false,
 };
 
@@ -38,12 +39,16 @@ const reducer = (state, action) => {
       return { ...state, userId: action.data };
     case ActionTypes.SET_AUTHENTICATED:
       return { ...state, authenticated: action.data };
-    case ActionTypes.SET_TOKEN:
+    case ActionTypes.SET_ACCESS_TOKEN:
       api.defaults.headers.common = {
         Authorization: `Bearer ${action.data}`,
       };
       localStorage.setItem(TOKEN, action.data);
       return { ...state, authToken: action.data };
+    //! ID TOKEN
+    case ActionTypes.SET_ID_TOKEN:
+      localStorage.setItem(ID_TOKEN, action.data);
+      return { ...state, idToken: action.data };
     //! LOGOUT
     case ActionTypes.LOGOUT:
       delete api.defaults.headers.common.Authorization;
@@ -52,6 +57,7 @@ const reducer = (state, action) => {
         ...initialState,
         authenticated: false,
         authToken: null,
+        idToken: null,
         currentUser: {},
       };
     default:
@@ -67,8 +73,17 @@ const AppContext = createContext({
 function AppContextProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+<<<<<<< HEAD
   const getToken = () => {
     return localStorage.getItem(TOKEN) || "Akshit";
+=======
+  const getAccessToken = () => {
+    return localStorage.getItem(TOKEN) || null;
+>>>>>>> 2703a3f2fbab64248a6b0517425995fb66887097
+  };
+
+  const getIdToken = () => {
+    return localStorage.getItem(ID_TOKEN) || null;
   };
 
   // eslint-disable-next-line
@@ -79,14 +94,16 @@ function AppContextProvider({ children }) {
   };
 
   const initializeAuth = (authToken) => {
-    const token = authToken || getToken();
+    const accessToken = authToken || getAccessToken();
+    const idToken = getIdToken || "";
     const user = getCurrentUser();
     const userId = getUserId();
-    if (token) {
+    if (accessToken) {
       api.defaults.headers.common = {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
       };
-      dispatch({ type: ActionTypes.SET_TOKEN, data: token });
+      dispatch({ type: ActionTypes.SET_ACCESS_TOKEN, data: accessToken });
+      dispatch({ type: ActionTypes.SET_ID_TOKEN, data: idToken });
       dispatch({ type: ActionTypes.SET_AUTHENTICATED, data: true });
       dispatch({ type: ActionTypes.SET_CURRENT_USER, data: user });
       dispatch({ type: ActionTypes.SET_USER_ID, data: userId });
@@ -97,7 +114,7 @@ function AppContextProvider({ children }) {
     state,
     dispatch,
     initializeAuth,
-    getToken,
+    getAccessToken,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
