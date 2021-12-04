@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { Button } from 'antd';
 import React, { useState } from 'react';
 import { fetchProducts } from '../../service';
@@ -104,11 +103,6 @@ function Dashboard() {
         }
         </div>
      </div>   
-);
-=======
-function Dashboard() {
-  return <div>Dashboard</div>;
->>>>>>> 2703a3f2fbab64248a6b0517425995fb66887097
-}
+)};
 
 export default Dashboard;
