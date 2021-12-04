@@ -44,7 +44,7 @@ function ProductPage() {
         const response = await loadIntoDatabase(reviewData).then((response) => {
             console.log(response.data);
             fetchSentiment(response.data).then((sentimentData) => {
-                if (Object.keys(sentimentData.data.Items[0]).length === 0) {
+                if (sentimentData.data.Items[0].length === 0) {
                     setOverallSentiment('Review Sentiment for the Product is '+null);
                 } else {
                     setOverallSentiment('Review Sentiment for the Product is '+sentimentData.data.Items[0].overallSentiment);
