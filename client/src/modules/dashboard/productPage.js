@@ -41,11 +41,17 @@ function ProductPage() {
     }
 
     async function demoFunc(reviewData) {
-        const response = await loadIntoDatabase(reviewData);
-        console.log(response.data);
-        const sentimentData = await fetchSentiment(response.data);
-        setOverallSentiment('Review Sentiment for the Product is '+sentimentData.data.Items[0].overallSentiment);
+        const response = await loadIntoDatabase(reviewData).then((response) => {
+            console.log(response.data);
+            fetchSentiment(response.data).then((sentimentData) => {
+                setOverallSentiment('Review Sentiment for the Product is '+sentimentData.data.Items[0].overallSentiment);
+            });
+        });
     } 
+
+    async function fetchSentimentFunction(response) {
+        
+    }
 
     return (
         <div>
