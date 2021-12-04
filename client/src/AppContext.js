@@ -73,13 +73,8 @@ const AppContext = createContext({
 function AppContextProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-<<<<<<< HEAD
-  const getToken = () => {
-    return localStorage.getItem(TOKEN) || "Akshit";
-=======
   const getAccessToken = () => {
     return localStorage.getItem(TOKEN) || null;
->>>>>>> 2703a3f2fbab64248a6b0517425995fb66887097
   };
 
   const getIdToken = () => {

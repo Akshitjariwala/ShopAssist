@@ -14,15 +14,17 @@ function ProductPage() {
     const[reviewCount,setReviewCount] = useState("");
     const[asin,setAsin] = useState("");
     const[userID,setUserID] = useState("");
+    const[overallSentiment, setOverallSentiment] = useState("");
     const reviewAccessData = {};
     const location = useLocation();
+    
     
 
     useEffect(() => {
         if (location.data) {
             setUserID(location.data.userID);
             setAsin(location.data.asin);
-
+            setProductTitle(location.data.title);
             reviewAccessData["userID"] = userID;
             reviewAccessData["asin"] = asin;
         }  
@@ -40,21 +42,18 @@ function ProductPage() {
 
     async function demoFunc(reviewData) {
         const response = await loadIntoDatabase(reviewData);
-        
-        console.log("Response from Sentiment Table : "+response.status);
-
         console.log(response.data);
-        const data = await fetchSentiment(response.data);
+        const sentimentData = await fetchSentiment(response.data);
+        setOverallSentiment('Sentiment of this product from review is '+sentimentData.data.Items[0].overallSentiment);
     } 
 
     return (
         <div>
-            <div class="container">
+            <div className="container">
                 <h2> {productTitle} </h2>
-                <h4>{userID}</h4>
-                <h4>{asin}</h4>
             </div>
             <button onClick={reviewAnalysis}>Review Analysis</button>
+            <h4>{overallSentiment}</h4>
             <button>Rating visulization</button>
         </div>
     );

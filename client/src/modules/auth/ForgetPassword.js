@@ -1,11 +1,5 @@
-<<<<<<< HEAD
 import React from "react";
 
-function ForgetPassword() {
-  return <div>ForgetPassword</div>;
-}
-
-=======
 import { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -111,5 +105,4 @@ function ForgetPassword() {
     </div>
   );
 }
->>>>>>> 2703a3f2fbab64248a6b0517425995fb66887097
 export default ForgetPassword;

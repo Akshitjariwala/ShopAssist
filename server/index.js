@@ -1,22 +1,30 @@
-<<<<<<< HEAD
-var axios = require("axios").default;
 const express = require("express");
 const amazonScraper = require('amazon-buddy');
-const PORT = process.env.PORT || 8080;
 var bodyParser = require('body-parser');
 var cors = require('cors');
 var AWS = require('aws-sdk');
+var router = express.Router();
+const app = express();
+app.use(express.json());
+const port = 8080;
+const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
+
+const { appConfig } = require("./config");
+const service = require("./service");
+const { config } = require("aws-sdk");
+
+app.use(cors());
+
 
 AWS.config.update({
   "region": "us-east-1",
-  "accessKeyId": "ASIA5YETWBVQR2A5YUY4",
-  "secretAccessKey": "Fj/PQKzbeQCwKFolxtEb3oJ5eQ5OoOJngBZCA+T0",
-  "sessionToken" : "FwoGZXIvYXdzEHYaDPoIYjCOzyeHlfR0SCLBAXB/7T/GOxYvPmzLDOrJZgoXvZNp2+/KFTKzkUXxOqr4YVFpMC5lGMomzmTvD334nmkREljqvz+TzrpJ8QpBQUTsHIeNebeJlGmR/dn3nOvuIsluNe768lrONNih1Xf2AzgbvBxy9S6H2Qjzj51hyxY9BXXxhCxFLXytPLTjN6MB5+Su4N0Phhkh81mtLL6WDCQz2jDZDWjr6k00LaWV1zVwwB+ttaIPyiHDzw2am6YuUM4FTG+ZoB/PzhcxTgHKzv8orsamjQYyLT/dt9h148+j0FylFYLzXNCNSQM5P1Dtq/XTtl4cjY0kqq8audR9dXgZOdd56A=="
+  "accessKeyId": "ASIA5YETWBVQVTJ462LC",
+  "secretAccessKey": "j9FFeKnltNI5XyZwldJmb66ARVM3eYEYyV4L83iw",
+  "sessionToken" : "FwoGZXIvYXdzEJn//////////wEaDAuEbWeAj/Bh+1N5mSLBASBqDPpCGZ82X7f4whZjovErNkWb8crFPvc52Pz/+U7vwYc7X+U6+OaYosG+cdpmxHL1LRJkl35Ekyu7eRTYOen6KBvur1ShOfjyovJhxNW9cyL2bQN5oLC3zdyGzQmNxbFzllyVIOC3H8R7BNPJ4J8eWyBX9FSrC2/vUShT9dG7ORxeBVRIO8a7U8yZXUzbPg1parn+Ip4iVQ2yT0JP4+Ah4MTYk5Ok7T9NMYI70K3UBWxXPl/KF8gG1dytH2O4TNso7YmujQYyLYe8y74x1DPDsUIb9ayzYibSVUi7GXIjUfTBsXKESADJhaFoFLO3MSw7FrZ1ew=="
  });
 
 var dynamoDB = new AWS.DynamoDB.DocumentClient();
 
-const app = express();
 app.use(bodyParser.json());
 const corsOptions ={
   origin:'*', 
@@ -165,27 +173,9 @@ app.post("/FetchSentiment", (req,res) => {
     if(err) console.log(err);
     else
       console.log(response);
+      return res.status(200).send(response);
   });
 });
-
-app.listen(PORT,() => {
-   console.log(`Server listening on ${PORT}`);
-});
-=======
-const express = require("express");
-var router = express.Router();
-const app = express();
-app.use(express.json());
-const port = 8080;
-const cors = require("cors");
-const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
-const AWS = require('aws-sdk');
-
-const { appConfig } = require("./config");
-const service = require("./service");
-const { config } = require("aws-sdk");
-
-app.use(cors());
 
 const poolData = {
   UserPoolId: appConfig.UserPoolId,
@@ -414,6 +404,5 @@ app.post("/resetPassword", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`helloworld: listening on port ${port}`);
+  console.log(`Shop Assist Server : listening on port ${port}`);
 });
->>>>>>> 2703a3f2fbab64248a6b0517425995fb66887097

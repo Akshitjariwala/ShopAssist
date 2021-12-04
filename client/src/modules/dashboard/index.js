@@ -12,16 +12,13 @@ function Dashboard() {
   const history = useHistory();
 
   const onSearchButtonClick = async () => {
-    console.log('before fetching the product: '+product);
     const products = await fetchProducts(product);
     setProductList(products.data);
     console.log(productList);
-    //console.log(products); // Display product details on the page.
   }
 
   const onProductClick = async (asinNumber) => {
 
-    console.log("Div Clicked");
     var productMetaData = {};
     productList.map(product => {
       if (product.asin == asinNumber){
@@ -64,13 +61,9 @@ function Dashboard() {
       }
     });
 
-    console.log(JSON.stringify("Akshit"));
-
-    // productMetaData = JSON.stringify(productMetaData);
-
     axios.post('https://qtx9upms37.execute-api.us-east-1.amazonaws.com/default/products',productMetaData).then((result) => {
       console.log(result.data);
-      history.push({pathname : ROUTES.PRODUCTPAGE, data : { userID : productMetaData.userID, asin : productMetaData.asin } }); // Add user email and asin number. 
+      history.push({pathname : ROUTES.PRODUCTPAGE, data : productMetaData }); // Add user email and asin number. 
     }).catch( (error) => {
       console.log(error);
     });
@@ -92,7 +85,7 @@ function Dashboard() {
         <div>
           {productList && productList.map((product) => (
             <div onClick={(e) => onProductClick(product.asin)} className="card" style={{cursor:"pointer",width:"500px"}}>
-              <div className="container" style={{"margin-top":"10px","margin-left":"10px"}}>
+              <div className="container" style={{"marginTop":"10px","marginLeft":"10px"}}>
                 <h4>{product.title}</h4>
                 <p>{product.price}</p>
                 <p>{product.review_count}</p>

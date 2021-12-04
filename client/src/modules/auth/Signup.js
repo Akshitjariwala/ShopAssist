@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 import React, { useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-=======
-import { useContext, useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
->>>>>>> 2703a3f2fbab64248a6b0517425995fb66887097
 
 //! Ant Imports
 
