@@ -23,7 +23,7 @@ function Dashboard() {
     productList.map(product => {
       if (product.asin == asinNumber){
           // Add user email id as well from session to product review details.
-          productMetaData["userID"] = "ironman12";
+          productMetaData["userID"] = "harshbhatt12";
           productMetaData["asin"] = product.asin;
           productMetaData["price"] = product.price.toString();
           productMetaData["reviews_count"] = product.reviews_count.toString();

@@ -18,9 +18,9 @@ app.use(cors());
 
 AWS.config.update({
   "region": "us-east-1",
-  "accessKeyId": "ASIA5YETWBVQVTJ462LC",
-  "secretAccessKey": "j9FFeKnltNI5XyZwldJmb66ARVM3eYEYyV4L83iw",
-  "sessionToken" : "FwoGZXIvYXdzEJn//////////wEaDAuEbWeAj/Bh+1N5mSLBASBqDPpCGZ82X7f4whZjovErNkWb8crFPvc52Pz/+U7vwYc7X+U6+OaYosG+cdpmxHL1LRJkl35Ekyu7eRTYOen6KBvur1ShOfjyovJhxNW9cyL2bQN5oLC3zdyGzQmNxbFzllyVIOC3H8R7BNPJ4J8eWyBX9FSrC2/vUShT9dG7ORxeBVRIO8a7U8yZXUzbPg1parn+Ip4iVQ2yT0JP4+Ah4MTYk5Ok7T9NMYI70K3UBWxXPl/KF8gG1dytH2O4TNso7YmujQYyLYe8y74x1DPDsUIb9ayzYibSVUi7GXIjUfTBsXKESADJhaFoFLO3MSw7FrZ1ew=="
+  "accessKeyId": "ASIA5YETWBVQSZ4GMWIS",
+  "secretAccessKey": "apjCH6NPvaspq5QK2z3MZWQ+nVgi9V51ZGEnVYCv",
+  "sessionToken" : "FwoGZXIvYXdzEJ3//////////wEaDBTlfl+WPMqhtvg3wCLBAZLu4nHrJ9+tUsJccoTj3glLvmvDzbSxyWFnyzurjhpWRvwsF2NQFWJuctMRFyDsQ5yKzHGwMOQVW8HNtHIvzp3xfbkNs2y8BjNty4IlzGYG80+FnoxnlJEFuy75sthng/Vxu2bTyu9w9Js0mFG+fFipke/4YVXOKavjaAApY8ykVJ3Q/zwQjvDGJiPxGBReLDFZB+AhzSKL4QSEyslRp5zbk+a4VSfF6mBawlosH8xY7z7WdIZbjXH9C/hCCSYUZx8oqImvjQYyLW0cbEgcDe43QVo0cH8tz11mxgOIgQwHdKrhmC1ygXwFBnU6Tvthvpe3nPt3jA=="
  });
 
 var dynamoDB = new AWS.DynamoDB.DocumentClient();

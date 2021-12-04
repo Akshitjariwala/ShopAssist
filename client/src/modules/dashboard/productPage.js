@@ -34,24 +34,26 @@ function ProductPage() {
         console.log(reviewAccessData);
         axios.post('https://7jjweip03i.execute-api.us-east-1.amazonaws.com/default/reviewanalysis',reviewAccessData).then((result) => {
         console.log(result.data.body);
-        demoFunc(result.data.body);
+        analysisFunc(result.data.body);
         }).catch((err) => {
             console.log(err);
         }) 
     }
 
-    async function demoFunc(reviewData) {
+    async function analysisFunc(reviewData) {
         const response = await loadIntoDatabase(reviewData).then((response) => {
             console.log(response.data);
             fetchSentiment(response.data).then((sentimentData) => {
-                setOverallSentiment('Review Sentiment for the Product is '+sentimentData.data.Items[0].overallSentiment);
-            });
+                if (Object.keys(sentimentData.data.Items[0]).length === 0) {
+                    setOverallSentiment('Review Sentiment for the Product is '+null);
+                } else {
+                    setOverallSentiment('Review Sentiment for the Product is '+sentimentData.data.Items[0].overallSentiment);
+                }
+                }).catch((err) => {
+                    console.log(err);
+                });
         });
     } 
-
-    async function fetchSentimentFunction(response) {
-        
-    }
 
     return (
         <div>
