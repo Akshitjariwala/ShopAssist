@@ -44,7 +44,7 @@ function ProductPage() {
         const response = await loadIntoDatabase(reviewData);
         console.log(response.data);
         const sentimentData = await fetchSentiment(response.data);
-        setOverallSentiment('Sentiment of this product from review is '+sentimentData.data.Items[0].overallSentiment);
+        setOverallSentiment('Review Sentiment for the Product is '+sentimentData.data.Items[0].overallSentiment);
     } 
 
     return (
