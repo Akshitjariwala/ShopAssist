@@ -23,7 +23,7 @@ function Dashboard() {
     productList.map(product => {
       if (product.asin == asinNumber){
           // Add user email id as well from session to product review details.
-          productMetaData["userID"] = "jondoe12";
+          productMetaData["userID"] = "ironman12";
           productMetaData["asin"] = product.asin;
           productMetaData["price"] = product.price.toString();
           productMetaData["reviews_count"] = product.reviews_count.toString();
@@ -32,11 +32,11 @@ function Dashboard() {
           productMetaData["stars_stat"] = product.stars_stat;
           productMetaData["thumbnail"] = product.thumbnail;
           
-          const product_review_list = {} 
+          //const product_review_list = {} 
 
-          //const product_review_list = {}
+          const product_review_list = {}
 
-          /*const tempReviewResult = [
+          const tempReviewResult = [
             "I like everything about it I had to switch back from android to iPhone so I heard the XR was good. I got this refurbished cause it’s cheap.The only thing I dislike no button but I’m getting used to not having a button.",     
             "muy buen celular esta perfecto",
             "Worked good for me.",
@@ -47,15 +47,15 @@ function Dashboard() {
             "I will update this as time goes on, but upon receiving my phone it seems nearly brand new.",
             "It’s perfect the battery last longer than expected can go almost two days with out charging it",
             "Received as listed great buy."
-            ];*/
+            ];
 
-          for (let i=0;i<product.reviews.length;i++){
+          /*for (let i=0;i<product.reviews.length;i++){
             product_review_list[i] = product.reviews[i];  
-          }
-
-          /*for (let i=0;i<tempReviewResult.length;i++){
-            product_review_list[i] = tempReviewResult[i];
           }*/
+
+          for (let i=0;i<tempReviewResult.length;i++){
+            product_review_list[i] = tempReviewResult[i];
+          }
 
           productMetaData["reviews"] = product_review_list;
       }

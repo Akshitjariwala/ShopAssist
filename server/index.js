@@ -42,7 +42,7 @@ app.post("/FetchProducts", (req,res) => {
   })
 });
   
-async function fetchProductsFromAPI (productName) {
+/*async function fetchProductsFromAPI (productName) {
   console.log("Fetching products....")
     const products = await amazonScraper.products({ keyword: productName, number: 5 });
     const results = products.result;
@@ -70,14 +70,14 @@ async function fetchProductsFromAPI (productName) {
         productData.push(productDetails);
     }
     return productData;
-};
+};*/
 
-/*async function fetchProductsFromAPI (productName) {
+async function fetchProductsFromAPI (productName) {
   console.log(productName);
     //const products = await amazonScraper.products({ keyword: productName, number: 50 });
     const product = {
         position: { page: 1, position: 1, global_position: 1 },
-        asin: 'B07P6Y7954',
+        asin: 'B07XV8C1G5',
         price: {
             discounted: false,
             current_price: 574,
@@ -126,7 +126,7 @@ async function fetchProductsFromAPI (productName) {
     console.log(productData);
 
     return productData;
-};*/
+};
 
 app.post("/LoadDatabase", (req,res) => {
  
