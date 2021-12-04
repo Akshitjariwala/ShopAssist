@@ -37,20 +37,20 @@ app.use(cors(corsOptions));
 
 app.post("/FetchProducts", (req,res) => {
   const productName = req.body.product;
-  console.log(productName);
   fetchProductsFromAPI(productName).then( (result) => {
     res.status(200).send(result);
   })
 });
   
-/*async function fetchProductsFromAPI (productName) {
-  console.log(productName);
-    const products = await amazonScraper.products({ keyword: productName, number: 50 });
+async function fetchProductsFromAPI (productName) {
+  console.log("Fetching products....")
+    const products = await amazonScraper.products({ keyword: productName, number: 5 });
     const results = products.result;
     const productData = [];
     for (var i=0; i<results.length ; i++) {
         let review_list = [];
         const productDetails = {};
+        console.log("Fetching reviews....")
         const reviews = await amazonScraper.reviews({asin:results[i].asin,number:10});
 
         productDetails["asin"] = results[i].asin;
@@ -65,13 +65,14 @@ app.post("/FetchProducts", (req,res) => {
           review_list.push(reviews.result[j].review);
         }
 
+        console.log(productDetails);
         productDetails["reviews"] = review_list;
         productData.push(productDetails);
     }
     return productData;
-};*/
+};
 
-async function fetchProductsFromAPI (productName) {
+/*async function fetchProductsFromAPI (productName) {
   console.log(productName);
     //const products = await amazonScraper.products({ keyword: productName, number: 50 });
     const product = {
@@ -125,7 +126,7 @@ async function fetchProductsFromAPI (productName) {
     console.log(productData);
 
     return productData;
-};
+};*/
 
 app.post("/LoadDatabase", (req,res) => {
  
