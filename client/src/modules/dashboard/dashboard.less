@@ -1,0 +1,32 @@
+.dashboard {
+  .product-search-form {
+    display: flex;
+    justify-content: center;
+    .searchbar {
+      position: sticky;
+      top: 72px;
+      width: 400px;
+      margin-bottom: 0;
+    }
+    button {
+      margin: 0;
+    }
+  }
+  .product-list {
+    margin: 1rem 0;
+    height: calc(100vh - 200px);
+    overflow-y: auto;
+    .ant-list-item {
+      background-color: white;
+      .ant-list-item-main {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        align-items: flex-start;
+        .ant-list-item-meta {
+          width: inherit;
+        }
+      }
+    }
+  }
+}
