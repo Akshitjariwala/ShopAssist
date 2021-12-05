@@ -11,12 +11,12 @@ export const ROUTES = {
   USERS_MANAGEMENT: "/users",
   UPLOAD_VIDEO: "/upload-video",
   VIDEOS: "/videos",
-  PRODUCTPAGE: "/product"
+  PRODUCT_PAGE: "/product/:asin",
 };
 
 /*  Modules */
 export const MODULES = {
-  USERS_MANAGEMENT: "User Management",
+  HOME: "Home",
   UPLOAD_VIDEO: "Upload Video",
   VIDEOS: "Videos",
 };

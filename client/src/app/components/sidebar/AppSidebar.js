@@ -10,16 +10,17 @@ import Sider from "antd/lib/layout/Sider";
 
 import MenuUnfoldOutlined from "@ant-design/icons/MenuUnfoldOutlined";
 import MenuFoldOutlined from "@ant-design/icons/MenuFoldOutlined";
-import UserOutlined from "@ant-design/icons/UserOutlined";
-import VideoCameraOutlined from "@ant-design/icons/VideoCameraOutlined";
-import UploadOutlined from "@ant-design/icons/UploadOutlined";
 
 //! User Files
 
 import { MODULES, ROUTES } from "common/constants";
+import { HomeOutlined } from "@ant-design/icons";
 
 function AppSidebar() {
-  const { push } = useHistory();
+  const {
+    push,
+    location: { pathname },
+  } = useHistory();
   const [collapsed, setCollapsed] = useState(false);
   const toggle = () => {
     setCollapsed(!collapsed);
@@ -51,18 +52,12 @@ function AppSidebar() {
         <Menu
           theme="lite"
           mode="inline"
-          //   selectedKeys={[`/${pathname.split("/")[1]}`]}
-          defaultSelectedKeys={[ROUTES.USERS_MANAGEMENT]}
+          selectedKeys={[`/${pathname.split("/")[1]}`]}
+          defaultSelectedKeys={[ROUTES.MAIN]}
           onSelect={onMenuSelect}
         >
-          <Menu.Item key={ROUTES.USERS_MANAGEMENT} icon={<UserOutlined />}>
-            <span>{MODULES.USERS_MANAGEMENT}</span>
-          </Menu.Item>
-          <Menu.Item key={ROUTES.VIDEOS} icon={<VideoCameraOutlined />}>
-            <span>{MODULES.VIDEOS}</span>
-          </Menu.Item>
-          <Menu.Item key={ROUTES.UPLOAD_VIDEO} icon={<UploadOutlined />}>
-            <span>{MODULES.UPLOAD_VIDEO}</span>
+          <Menu.Item key={ROUTES.MAIN} icon={<HomeOutlined />}>
+            <span>{MODULES.HOME}</span>
           </Menu.Item>
         </Menu>
       </div>

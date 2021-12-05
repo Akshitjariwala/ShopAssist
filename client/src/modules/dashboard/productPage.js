@@ -1,72 +1,141 @@
-import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useLocation, useParams, useHistory } from "react-router-dom";
+import { isEmpty } from "lodash";
+
+//! Ant Imports
+
+import { List, Button, Descriptions, Progress, Typography } from "antd";
+
+//! User Files
+
 // import { loadIntoDatabase, fetchSentiment } from "common/service";
 import api from "common/api";
+import { AppContext } from "AppContext";
+import { ROUTES } from "common/constants";
+import { toast } from "common/utils";
+
+const { Title, Text } = Typography;
 
 function ProductPage() {
+  const {
+    state: { userId },
+  } = useContext(AppContext);
+  const { push } = useHistory();
   const [productTitle, setProductTitle] = useState("");
-  //   const [thumbnail, setThumbnail] = useState("");
-  //   const [price, setPrice] = useState("");
-  //   const [reviews, setReviews] = useState("");
-  //   const [stars_stat, setStartStat] = useState("");
-  //   const [rating, setRating] = useState("");
-  //   const [reviewCount, setReviewCount] = useState("");
-  const [asin, setAsin] = useState("");
-  const [userID, setUserID] = useState("");
-  // eslint-disable-next-line
-  const [overallSentiment, setOverallSentiment] = useState("");
-  const reviewAccessData = {};
+  const [currentProduct, setCurrentProduct] = useState({});
+  const { asin } = useParams();
   const location = useLocation();
 
   useEffect(() => {
-    if (location.data) {
-      setUserID(location.data.userID);
-      setAsin(location.data.asin);
-      setProductTitle(location.data.title);
-      reviewAccessData["userID"] = userID;
-      reviewAccessData["asin"] = asin;
+    const product = location.state.product;
+    if (isEmpty(product)) {
+      push(ROUTES.MAIN);
+    } else {
+      console.log(product);
+      setCurrentProduct(product);
+      setProductTitle(product.title);
     }
     // eslint-disable-next-line
   }, []);
 
   const reviewAnalysis = async () => {
-    console.log(reviewAccessData);
-    api
-      .post(
+    const reviewAccessData = {
+      asin,
+      userID: userId,
+    };
+    try {
+      const response = await api.post(
         "https://7jjweip03i.execute-api.us-east-1.amazonaws.com/default/reviewanalysis",
         reviewAccessData
-      )
-      .then((result) => {
-        console.log(result.data.body);
-        // demoFunc(result.data.body);
-      })
-      .catch((err) => {
-        console.log(err);
+      );
+      const { data } = response;
+      toast({
+        message: `Sentiment review of this product: ${
+          data?.body ? data.body : "Unknown"
+        }`,
+        type: "info",
       });
+    } catch (err) {
+      toast({
+        message: err.message,
+        type: "error",
+      });
+    }
   };
 
-  //   async function demoFunc(reviewData) {
-  //     const response = await loadIntoDatabase(reviewData).then((response) => {
-  //       console.log(response.data);
-  //       fetchSentiment(response.data).then((sentimentData) => {
-  //         setOverallSentiment(
-  //           "Review Sentiment for the Product is " +
-  //             sentimentData.data.Items[0].overallSentiment
-  //         );
-  //       });
-  //     });
-  //   }
-
-  //   async function fetchSentimentFunction(response) {}
-
   return (
-    <div>
-      <div className="container">
-        <h2> {productTitle} </h2>
-      </div>
-      <button onClick={reviewAnalysis}>Review Analysis</button>
-      <h4>{overallSentiment}</h4>
-      <button>Rating visulization</button>
+    <div className="product-info">
+      <Descriptions
+        title={
+          <>
+            <Title level={4} className="sdp-text-strong acc-text">
+              Product Info
+            </Title>
+            <div className="acc-btn">
+              <Button type="primary" onClick={reviewAnalysis}>
+                Review Analysis
+              </Button>
+              {/* <h4>{overallSentiment}</h4> */}
+              <Button type="primary">Rating Visualization</Button>
+            </div>
+          </>
+        }
+        bordered
+      >
+        <Descriptions.Item
+          span={3}
+          label={<Text className="sdp-text-strong">Product</Text>}
+        >
+          {productTitle}
+        </Descriptions.Item>
+        <Descriptions.Item
+          label={<Text className="sdp-text-strong">ASIN</Text>}
+          span={2}
+        >
+          {currentProduct?.asin}
+        </Descriptions.Item>
+        <Descriptions.Item
+          label={<Text className="sdp-text-strong">Overall Rating</Text>}
+        >
+          {currentProduct?.overall_rating}
+        </Descriptions.Item>
+        <Descriptions.Item
+          label={<Text className="sdp-text-strong">Price</Text>}
+          span={2}
+        >
+          ${currentProduct?.price}
+        </Descriptions.Item>
+        <Descriptions.Item
+          label={<Text className="sdp-text-strong">Total Reviews</Text>}
+          span={3}
+        >
+          {currentProduct?.reviews_count}
+        </Descriptions.Item>
+        {currentProduct?.stars_stat && (
+          <Descriptions.Item
+            label={<Text className="sdp-text-strong">Ratings</Text>}
+            span={3}
+          >
+            {Object.values(currentProduct?.stars_stat).map((rating) => {
+              return <Progress percent={rating.substr(0, rating.length - 1)} />;
+            })}
+          </Descriptions.Item>
+        )}
+        <Descriptions.Item
+          label={<Text className="sdp-text-strong">Reviews</Text>}
+          span={3}
+        >
+          <List
+            size="large"
+            bordered
+            className="product-info"
+            dataSource={currentProduct?.reviews}
+            renderItem={(item) => {
+              return <List.Item>{item}</List.Item>;
+            }}
+          />
+        </Descriptions.Item>
+      </Descriptions>
     </div>
   );
 }
