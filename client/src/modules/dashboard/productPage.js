@@ -4,7 +4,7 @@ import { isEmpty } from "lodash";
 
 //! Ant Imports
 
-import { List, Button, Descriptions, Progress, Typography } from "antd";
+import { List, Button, Descriptions, Typography } from "antd";
 
 //! User Files
 
@@ -31,7 +31,6 @@ function ProductPage() {
     if (isEmpty(product)) {
       push(ROUTES.MAIN);
     } else {
-      console.log(product);
       setCurrentProduct(product);
       setProductTitle(product.title);
     }
@@ -67,7 +66,7 @@ function ProductPage() {
     <div className="product-info">
       <Descriptions
         title={
-          <>
+          <div className="product-title">
             <Title level={4} className="sdp-text-strong acc-text">
               Product Info
             </Title>
@@ -78,7 +77,7 @@ function ProductPage() {
               {/* <h4>{overallSentiment}</h4> */}
               <Button type="primary">Rating Visualization</Button>
             </div>
-          </>
+          </div>
         }
         bordered
       >
@@ -111,7 +110,7 @@ function ProductPage() {
         >
           {currentProduct?.reviews_count}
         </Descriptions.Item>
-        {currentProduct?.stars_stat && (
+        {/* {currentProduct?.stars_stat && (
           <Descriptions.Item
             label={<Text className="sdp-text-strong">Ratings</Text>}
             span={3}
@@ -120,7 +119,7 @@ function ProductPage() {
               return <Progress percent={rating.substr(0, rating.length - 1)} />;
             })}
           </Descriptions.Item>
-        )}
+        )} */}
         <Descriptions.Item
           label={<Text className="sdp-text-strong">Reviews</Text>}
           span={3}
