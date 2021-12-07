@@ -85,3 +85,34 @@
     margin: unset;
   }
 }
+
+.acc-div {
+  cursor: pointer;
+  &:hover {
+    transition: all 0.2s ease-in;
+    color: @primary-color;
+  }
+}
+
+.product-info {
+  height: calc(100vh - 150px);
+  overflow-y: auto;
+  .product-title {
+    display: flex;
+    justify-content: space-between;
+  }
+  .ant-descriptions-header {
+    margin-bottom: 0;
+    .ant-descriptions-title {
+      .acc-btn {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        margin-bottom: 1rem;
+        button {
+          margin-left: 1rem;
+        }
+      }
+    }
+  }
+}

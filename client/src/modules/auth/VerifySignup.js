@@ -1,7 +1,5 @@
-import React from "react";
-
-import { useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useHistory } from "react-router-dom";
 
 //! Ant Imports
 
@@ -9,7 +7,7 @@ import { Form, Input, Button, Typography } from "antd";
 
 //! Ant Icons
 
-import { MailOutlined } from "@ant-design/icons";
+import { LockOutlined } from "@ant-design/icons";
 
 //! User Files
 
@@ -18,50 +16,61 @@ import { AppContext } from "AppContext";
 import { ROUTES } from "common/constants";
 import api from "common/api";
 import { config } from "common/config";
+import { isEmpty } from "lodash";
 
 const { Title } = Typography;
 
-function ForgetPassword() {
+function VerifySignup() {
   const {
     state: { authenticated },
   } = useContext(AppContext);
+  const { push, location } = useHistory();
   const [loading, setLoading] = useState(false);
-  const { push } = useHistory();
   const onFinish = async (values) => {
-    const { email } = values;
-    setLoading(true);
+    const { verificationCode } = values;
+    const { email } = location.state.userDetails;
     try {
-      const response = await api.post(`${config.SERVER_URL}/forgotPassword`, {
+      if (isEmpty(location.state.userDetails)) {
+        push(ROUTES.LOGIN);
+      }
+      setLoading(true);
+      const response = await api.post(`${config.SERVER_URL}/signUpVerify`, {
         email,
+        verificationCode,
       });
       const { data } = response;
       if (data.status === "success") {
-        toast({
-          message: "Email sent successfully",
-          type: "success",
-        });
-        setTimeout(() => {
-          push(ROUTES.RESET_PASSWORD);
-        }, 2000);
+        push(ROUTES.LOGIN);
       } else {
         toast({
-          message: "Something went wrong while serving your request",
+          message: "Security code is wrong or may be expired",
           type: "error",
         });
       }
     } catch (err) {
+      console.log(err);
       toast({
         message: err.message,
         type: "error",
       });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
+    let mounted = true;
     if (authenticated) {
-      push("/");
+      if (mounted) {
+        push("/");
+      }
     }
+    if (isEmpty(location.state.userDetails)) {
+      push(ROUTES.LOGIN);
+    }
+    return () => {
+      mounted = false;
+    };
     // eslint-disable-next-line
   }, [authenticated]);
 
@@ -77,18 +86,14 @@ function ForgetPassword() {
         onFinish={onFinish}
       >
         <Form.Item
-          name="email"
+          name="verificationCode"
           rules={[
-            {
-              type: "email",
-              message: "The input is not valid a email!",
-            },
-            { required: true, message: "Please enter your email" },
+            { required: true, message: "Please enter verification code" },
           ]}
         >
           <Input
-            prefix={<MailOutlined className="site-form-item-icon" />}
-            placeholder="Email"
+            prefix={<LockOutlined className="site-form-item-icon" />}
+            placeholder="Security Code"
           />
         </Form.Item>
         <Form.Item>
@@ -98,11 +103,16 @@ function ForgetPassword() {
             htmlType="submit"
             className="login-form-button"
           >
-            Send
+            Confirm
           </Button>
+          <div className="user-actions">
+            <div />
+            <Link to={ROUTES.LOGIN}>Already a user? Login</Link>
+          </div>
         </Form.Item>
       </Form>
     </div>
   );
 }
-export default ForgetPassword;
+
+export default VerifySignup;
