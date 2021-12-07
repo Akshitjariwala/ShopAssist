@@ -4,21 +4,26 @@ export const ROUTES = {
   LOGIN: "/login",
   LOGOUT: "/logout",
   REGISTER: "/register",
+  VERIFY_SIGNUP: "/verify-signup",
   FORGET_PASSWORD: "/forget-password",
+  RESET_PASSWORD: "/reset-password",
+  RESEND_CODE: "/resend-code",
   USERS_MANAGEMENT: "/users",
   UPLOAD_VIDEO: "/upload-video",
   VIDEOS: "/videos",
+  PRODUCT_PAGE: "/product/:asin",
 };
 
 /*  Modules */
 export const MODULES = {
-  USERS_MANAGEMENT: "User Management",
+  HOME: "Home",
   UPLOAD_VIDEO: "Upload Video",
   VIDEOS: "Videos",
 };
 
 /* Authentication */
 export const TOKEN = "TOKEN";
+export const ID_TOKEN = "ID_TOKEN";
 export const USER = "USER";
 export const ADMIN = "ADMIN";
 export const USER_ID = "USER_ID";

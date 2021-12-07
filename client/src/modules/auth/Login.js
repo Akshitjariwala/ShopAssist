@@ -1,5 +1,6 @@
-import { useContext, useEffect, useState } from "react";
+import React,{ useContext, useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
+import jwtDecode from "jwt-decode";
 
 //! Ant Imports
 
@@ -11,11 +12,12 @@ import { MailOutlined, LockOutlined } from "@ant-design/icons";
 
 //! User Files
 
-import { auth } from "_firebase";
 import { toast } from "common/utils";
 import { AppContext } from "AppContext";
 import * as ActionTypes from "common/actionTypes";
 import { ROUTES } from "common/constants";
+import api from "common/api";
+import { config } from "common/config";
 
 const { Title } = Typography;
 
@@ -30,22 +32,47 @@ function Login() {
     const { email, password } = values;
     setLoading(true);
     try {
-      const userAuth = await auth.signInWithEmailAndPassword(email, password);
-      const { user } = userAuth;
-      const token = await user.getIdToken();
-      const currentUser = {
-        displayName: user.displayName,
-        email: user.email,
-        emailVerified: user.emailVerified,
-        uid: user.uid,
-        metadata: user.metadata,
-        token,
-      };
-      dispatch({ type: ActionTypes.SET_TOKEN, data: token });
-      dispatch({ type: ActionTypes.SET_CURRENT_USER, data: currentUser });
-      dispatch({ type: ActionTypes.SET_USER_ID, data: user.uid });
-      dispatch({ type: ActionTypes.SET_AUTHENTICATED, data: true });
-      push(ROUTES.MAIN);
+      const response = await api.post(`${config.SERVER_URL}/login`, {
+        email,
+        password,
+      });
+      const { data } = response;
+      if (data.status === "success") {
+        const {
+          result: { accessToken, idToken },
+        } = data;
+        const decoded = jwtDecode(idToken);
+        const currentUser = {
+          email,
+          userId: decoded["cognito:username"],
+          name: decoded.name,
+          emailVerified: decoded.email_verified,
+          idToken,
+          accessToken,
+        };
+        dispatch({ type: ActionTypes.SET_ID_TOKEN, data: idToken });
+        dispatch({ type: ActionTypes.SET_ACCESS_TOKEN, data: accessToken });
+        dispatch({ type: ActionTypes.SET_CURRENT_USER, data: currentUser });
+        dispatch({
+          type: ActionTypes.SET_USER_ID,
+          data: decoded["cognito:username"],
+        });
+        dispatch({ type: ActionTypes.SET_AUTHENTICATED, data: true });
+        push(ROUTES.MAIN);
+      } else if (
+        data.status === "failure" &&
+        data.error.name === "UserNotConfirmedException"
+      ) {
+        const userDetails = {
+          email,
+        };
+        push(ROUTES.RESEND_CODE, { userDetails });
+      } else {
+        toast({
+          message: "Email or password is wrong",
+          type: "error",
+        });
+      }
     } catch (err) {
       toast({
         message: err.message,
