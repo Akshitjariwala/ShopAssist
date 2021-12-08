@@ -3,7 +3,6 @@ import  { useContext, useEffect, useState } from "react";
 import { useLocation, useParams, useHistory } from "react-router-dom";
 import { isEmpty } from "lodash";
 
-
 //! Ant Imports
 
 import { List, Button, Descriptions, Typography } from "antd";
@@ -45,16 +44,12 @@ function ProductPage() {
       userID: currentProduct.userID,
     };
     try {
-      const response = await api.post(
+      api.post(
         "https://7jjweip03i.execute-api.us-east-1.amazonaws.com/default/reviewanalysis",
         reviewAccessData
-      );
-      const { data } = response;
-      toast({
-        message: `Sentiment review of this product: ${
-          data?.body ? data.body : "Unknown"
-        }`,
-        type: "info",
+      ).then((response) => {
+        console.log(response.data.body)
+        analysisFunc(response.data.body);
       });
     } catch (err) {
       toast({
@@ -63,6 +58,24 @@ function ProductPage() {
       });
     }
   };
+
+  async function analysisFunc(reviewData) {
+     api.post("http://localhost:8080/LoadDatabase",{ data : reviewData }).then((response) => {
+        console.log(response.data);
+        api.post("http://localhost:8080/FetchSentiment",{ data : response.data }).then((sentimentData) => {
+            console.log(sentimentData);
+            toast({
+            message: `Sentiment review of this product: ${
+              sentimentData?.data.Items[0].overallSentiment ? sentimentData?.data.Items[0].overallSentiment : "Unknown"
+            }`,
+            type: "info",
+          });
+            }).catch((err) => {
+                console.log(err);
+            });
+    });
+  }
+
 
   return (
     <div className="product-info">

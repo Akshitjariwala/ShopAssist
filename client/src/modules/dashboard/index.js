@@ -44,8 +44,11 @@ function Dashboard() {
     }
   };
 
-  const handleProductClick = (product) => {
+  const handleProductClick = async (product) => {
+    api.post('https://qtx9upms37.execute-api.us-east-1.amazonaws.com/default/products',product).then((result) => {
     push(`/product/${product.asin}`, { product });
+  });
+    
   };
 
   const IconText = ({ icon, text }) => (
