@@ -1,11 +1,11 @@
 import { Route, Switch } from "react-router-dom";
-import React from "react";
+import React from 'react';
 
 //! User Files
 
 import { ROUTES } from "common/constants";
 import Dashboard from "modules/dashboard";
-import ProductPage from "modules/dashboard/ProductPage";
+import ProductPage from "modules/dashboard/productPage";
 import Error404 from "Error404";
 
 const ContentRoutes = () => {

@@ -18,9 +18,9 @@ app.use(cors());
 
 AWS.config.update({
   "region": "us-east-1",
-  "accessKeyId": "ASIA5YETWBVQSZ4GMWIS",
-  "secretAccessKey": "apjCH6NPvaspq5QK2z3MZWQ+nVgi9V51ZGEnVYCv",
-  "sessionToken" : "FwoGZXIvYXdzEJ3//////////wEaDBTlfl+WPMqhtvg3wCLBAZLu4nHrJ9+tUsJccoTj3glLvmvDzbSxyWFnyzurjhpWRvwsF2NQFWJuctMRFyDsQ5yKzHGwMOQVW8HNtHIvzp3xfbkNs2y8BjNty4IlzGYG80+FnoxnlJEFuy75sthng/Vxu2bTyu9w9Js0mFG+fFipke/4YVXOKavjaAApY8ykVJ3Q/zwQjvDGJiPxGBReLDFZB+AhzSKL4QSEyslRp5zbk+a4VSfF6mBawlosH8xY7z7WdIZbjXH9C/hCCSYUZx8oqImvjQYyLW0cbEgcDe43QVo0cH8tz11mxgOIgQwHdKrhmC1ygXwFBnU6Tvthvpe3nPt3jA=="
+  "accessKeyId": "ASIA5YETWBVQZIZTHT5C",
+  "secretAccessKey": "Ys5Hnl4GpJFeCTkizidLUJRefXxZUbqpx/lFzJRJ",
+  "sessionToken" : "FwoGZXIvYXdzEOP//////////wEaDDJtGhuRNrsBnxzHVyLBAcu6+KZgRivbYSR0vVfGL1BW8q2t7vgBtqH4Ts5bKD6Kiz1bdOXec7tvE1kk5DtvhGtubjPuVXEgnRudAA6lYVMShWOHxGHvxgJg5A29gnhMdysqbtKdlnAnrazmE4TznX7R0xqZVga57sRcrB3Krvo5sCYHoKwCK7MifzeQ21WjBcgEH05l7I5JcH+ANa45hDomU13KCn00LD/u2tixqedOR/2jjlSURpZ46b1Fnr4qpOebJ+p2FjEFK+v1PPlcM80o276+jQYyLUG+cQR3x1gkmCiVt42ueV4IywLm38W3XnFDTe6payv/9isMZH4yJlUx5Dzx4Q=="
  });
 
 var dynamoDB = new AWS.DynamoDB.DocumentClient();
@@ -107,6 +107,7 @@ async function fetchProductsFromAPI (productName) {
         const productDetails = {};
         const reviews = await amazonScraper.reviews({asin:'B07P6Y7954',number:50});
 
+        productDetails["userID"] = "ironman12"
         productDetails["asin"] = results[i].asin;
         productDetails["price"] = results[i].price.current_price.toString(); 
         productDetails["reviews_count"] = results[i].reviews.total_reviews.toString();
