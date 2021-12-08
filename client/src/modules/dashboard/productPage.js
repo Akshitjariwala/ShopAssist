@@ -1,6 +1,8 @@
-import { useContext, useEffect, useState } from "react";
+import React from 'react';
+import  { useContext, useEffect, useState } from "react";
 import { useLocation, useParams, useHistory } from "react-router-dom";
 import { isEmpty } from "lodash";
+
 
 //! Ant Imports
 
@@ -40,7 +42,7 @@ function ProductPage() {
   const reviewAnalysis = async () => {
     const reviewAccessData = {
       asin,
-      userID: userId,
+      userID: currentProduct.userID,
     };
     try {
       const response = await api.post(
