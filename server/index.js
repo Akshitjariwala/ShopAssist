@@ -309,6 +309,8 @@ app.post("/login", async (req, res) => {
     let cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
     cognitoUser.authenticateUser(authenticationDetails, {
       onSuccess: function (result) {
+        var today = new Date();
+        today.setHours(today.getHours() + 1);
         return res.json({
           statusCode: 200,
           status: "success",
@@ -316,6 +318,7 @@ app.post("/login", async (req, res) => {
             accessToken: result.getAccessToken().getJwtToken(),
             idToken: result.getIdToken().getJwtToken(),
             refreshToken: result.getRefreshToken().getToken(),
+            expiryTime: today
           },
         });
       },
