@@ -1,8 +1,8 @@
 const express = require("express");
-const amazonScraper = require('amazon-buddy');
-var bodyParser = require('body-parser');
-var cors = require('cors');
-var AWS = require('aws-sdk');
+const amazonScraper = require("amazon-buddy");
+var bodyParser = require("body-parser");
+var cors = require("cors");
+var AWS = require("aws-sdk");
 var router = express.Router();
 const app = express();
 app.use(express.json());
@@ -15,33 +15,32 @@ const { config } = require("aws-sdk");
 
 app.use(cors());
 
-
 AWS.config.update({
-  "region": "us-east-1",
-  "accessKeyId": "ASIA5YETWBVQVTJ462LC",
-  "secretAccessKey": "j9FFeKnltNI5XyZwldJmb66ARVM3eYEYyV4L83iw",
-  "sessionToken" : "FwoGZXIvYXdzEJn//////////wEaDAuEbWeAj/Bh+1N5mSLBASBqDPpCGZ82X7f4whZjovErNkWb8crFPvc52Pz/+U7vwYc7X+U6+OaYosG+cdpmxHL1LRJkl35Ekyu7eRTYOen6KBvur1ShOfjyovJhxNW9cyL2bQN5oLC3zdyGzQmNxbFzllyVIOC3H8R7BNPJ4J8eWyBX9FSrC2/vUShT9dG7ORxeBVRIO8a7U8yZXUzbPg1parn+Ip4iVQ2yT0JP4+Ah4MTYk5Ok7T9NMYI70K3UBWxXPl/KF8gG1dytH2O4TNso7YmujQYyLYe8y74x1DPDsUIb9ayzYibSVUi7GXIjUfTBsXKESADJhaFoFLO3MSw7FrZ1ew=="
- });
+  region: "us-east-1",
+  accessKeyId: "ASIA5YETWBVQ5ZT57Z4R",
+  secretAccessKey: "7RmfGfluxwCoDVakD9pURtV11FDKEwjJdOpJkEI9",
+  sessionToken:
+    "FwoGZXIvYXdzEAMaDJiBR8A9fUWVyaF9byLBAVwwmsVSM5OuRowJVnRDSZvE47cUAVtpb81z9rltPv5FLFRSw9E3nA9Zt6AuAKrHL7i+64frudHljXdotqKeoIMhXveUDeb3QxP9F5JTazO7iUsomUB9A9y4bWLtBAOjLtWs37xti7AiPQxsgRldhjEtyjXgsJm5uaNRMy7E1T9FqsAbPAbqJM0o0aUAz4wbHOz7+1duQ428C3SFdq+bSm9il8cIwhXHMvy25GvV8SdplXoZVGqbn2QdohnqJoCwU+0o18PFjQYyLYu5zwOHcJNA90PH263/yRtHWYfzhQk2b/xphTNFBJeS+AiHQCsOoO50leHNYw==",
+});
 
 var dynamoDB = new AWS.DynamoDB.DocumentClient();
 
 app.use(bodyParser.json());
-const corsOptions ={
-  origin:'*', 
-  credentials:true,            //access-control-allow-credentials:true
-  optionSuccessStatus:200,
-}
+const corsOptions = {
+  origin: "*",
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
 
 app.use(cors(corsOptions));
 
-
-app.post("/FetchProducts", (req,res) => {
+app.post("/FetchProducts", (req, res) => {
   const productName = req.body.product;
-  fetchProductsFromAPI(productName).then( (result) => {
+  fetchProductsFromAPI(productName).then((result) => {
     res.status(200).send(result);
-  })
+  });
 });
-  
+
 /*async function fetchProductsFromAPI (productName) {
   console.log("Fetching products....")
     const products = await amazonScraper.products({ keyword: productName, number: 5 });
@@ -72,109 +71,110 @@ app.post("/FetchProducts", (req,res) => {
     return productData;
 };*/
 
-async function fetchProductsFromAPI (productName) {
+async function fetchProductsFromAPI(productName) {
   console.log(productName);
-    //const products = await amazonScraper.products({ keyword: productName, number: 50 });
-    const product = {
-        position: { page: 1, position: 1, global_position: 1 },
-        asin: 'B07XV8C1G5',
-        price: {
-            discounted: false,
-            current_price: 574,
-            currency: 'USD',
-            before_price: 0,
-            savings_amount: 0,
-            savings_percent: 0
-        },
-        reviews: { total_reviews: 317, rating: 4.6 },
-        url: 'https://www.amazon.com/dp/B07P6Y7954',
-        score: '1458.20',
-        sponsored: false,
-        amazonChoice: false,
-        bestSeller: false,
-        amazonPrime: false,
-        title: 'Newest Flagship Microsoft Xbox One S 1TB HDD Bundle with Two (2X) Wireless Controllers, 1-Month Game Pass Trial, 14-Day Xbox Live Gold Trial - White',
-        thumbnail: 'https://m.media-amazon.com/images/I/51-JAEI1jzL._AC_UY218_.jpg'
+  //const products = await amazonScraper.products({ keyword: productName, number: 50 });
+  const product = {
+    position: { page: 1, position: 1, global_position: 1 },
+    asin: "B07XV8C1G5",
+    price: {
+      discounted: false,
+      current_price: 574,
+      currency: "USD",
+      before_price: 0,
+      savings_amount: 0,
+      savings_percent: 0,
+    },
+    reviews: { total_reviews: 317, rating: 4.6 },
+    url: "https://www.amazon.com/dp/B07P6Y7954",
+    score: "1458.20",
+    sponsored: false,
+    amazonChoice: false,
+    bestSeller: false,
+    amazonPrime: false,
+    title:
+      "Newest Flagship Microsoft Xbox One S 1TB HDD Bundle with Two (2X) Wireless Controllers, 1-Month Game Pass Trial, 14-Day Xbox Live Gold Trial - White",
+    thumbnail: "https://m.media-amazon.com/images/I/51-JAEI1jzL._AC_UY218_.jpg",
+  };
+
+  const results = [];
+  results.push(product);
+
+  //const results = products.result;
+  const productData = [];
+  for (var i = 0; i < results.length; i++) {
+    let review_list = [];
+    const productDetails = {};
+    const reviews = await amazonScraper.reviews({
+      asin: "B07P6Y7954",
+      number: 50,
+    });
+
+    productDetails["userID"] = "ironman12";
+    productDetails["asin"] = results[i].asin;
+    productDetails["price"] = results[i].price.current_price.toString();
+    productDetails["reviews_count"] =
+      results[i].reviews.total_reviews.toString();
+    productDetails["overall_rating"] = results[i].reviews.rating.toString();
+    productDetails["title"] = results[i].title;
+    productDetails["thumbnail"] = results[i].thumbnail;
+    productDetails["stars_stat"] = reviews.stars_stat;
+
+    for (var j = 0; j < reviews.result.length; j++) {
+      review_list.push(reviews.result[j].review);
     }
 
-    const results = [];
-    results.push(product);
+    productDetails["reviews"] = review_list;
+    productData.push(productDetails);
+  }
 
-    //const results = products.result;
-    const productData = [];
-    for (var i=0; i<results.length ; i++) {
-        let review_list = [];
-        const productDetails = {};
-        const reviews = await amazonScraper.reviews({asin:'B07P6Y7954',number:50});
+  console.log(productData);
 
-        productDetails["asin"] = results[i].asin;
-        productDetails["price"] = results[i].price.current_price.toString(); 
-        productDetails["reviews_count"] = results[i].reviews.total_reviews.toString();
-        productDetails["overall_rating"] = results[i].reviews.rating.toString();
-        productDetails["title"] = results[i].title;
-        productDetails["thumbnail"] = results[i].thumbnail;
-        productDetails["stars_stat"] = reviews.stars_stat; 
-        
-        for (var j=0;j<reviews.result.length;j++) {
-          review_list.push(reviews.result[j].review);
-        }
+  return productData;
+}
 
-        productDetails["reviews"] = review_list;
-        productData.push(productDetails);
-    }
-
-    console.log(productData);
-
-    return productData;
-};
-
-app.post("/LoadDatabase", (req,res) => {
- 
+app.post("/LoadDatabase", (req, res) => {
   console.log(req.body.data.reviewID);
   console.log(req.body.data.reviewList);
   const productReviewID = req.body.data.reviewID;
   const productReviewList = req.body.data.reviewList;
 
   var params = {
-    TableName : "ProductReview",
-    Item : {
-      reviewID : productReviewID,
-      reviewList : productReviewList
-    }
-  }
+    TableName: "ProductReview",
+    Item: {
+      reviewID: productReviewID,
+      reviewList: productReviewList,
+    },
+  };
 
   const result = productReviewID;
 
   dynamoDB.put(params, (err, response) => {
-      if(err)
-        console.log(err);
-      else  
-        return res.status(200).send(result);
+    if (err) console.log(err);
+    else return res.status(200).send(result);
   });
-})
+});
 
-app.post("/FetchSentiment", (req,res) => {
-  
+app.post("/FetchSentiment", (req, res) => {
   const sentimentID = req.body.data;
   console.log("In Fetch sentiment function.");
   console.log(sentimentID);
 
   var params = {
-    TableName : "sentimentTable",
-    KeyConditionExpression : "#transactionID = :transactionID",
-    ExpressionAttributeNames:{
-        "#transactionID": "sentimentID"
+    TableName: "sentimentTable",
+    KeyConditionExpression: "#transactionID = :transactionID",
+    ExpressionAttributeNames: {
+      "#transactionID": "sentimentID",
     },
     ExpressionAttributeValues: {
-    ":transactionID": sentimentID
-}
-};
+      ":transactionID": sentimentID,
+    },
+  };
 
-  dynamoDB.query(params, (err,response) => {
-    if(err) console.log(err);
-    else
-      console.log(response);
-      return res.status(200).send(response);
+  dynamoDB.query(params, (err, response) => {
+    if (err) console.log(err);
+    else console.log(response);
+    return res.status(200).send(response);
   });
 });
 
@@ -260,22 +260,27 @@ app.post("/resendConfirmationCode", async (req, res) => {
       ClientId: appConfig.ClientId,
       Username: email,
     };
-    const client = new AWS.CognitoIdentityServiceProvider({ region: "us-east-1" });
-    const result = await client.resendConfirmationCode(params, function (err, result) {
-      if (err) {
-        res.json({
-          statusCode: 400,
-          status: "failure",
-          error: err
-        });
-      } else {
-        return res.json({
-          statusCode: 200,
-          status: "success",
-          result
-        });
-      }
+    const client = new AWS.CognitoIdentityServiceProvider({
+      region: "us-east-1",
     });
+    const result = await client.resendConfirmationCode(
+      params,
+      function (err, result) {
+        if (err) {
+          res.json({
+            statusCode: 400,
+            status: "failure",
+            error: err,
+          });
+        } else {
+          return res.json({
+            statusCode: 200,
+            status: "success",
+            result,
+          });
+        }
+      }
+    );
   } catch (err) {
     return res.json({
       statusCode: 400,
