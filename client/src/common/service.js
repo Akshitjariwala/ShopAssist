@@ -1,8 +1,9 @@
 import api from "common/api";
+import { config } from "./config";
 
 export const fetchProducts = (productName) => {
   return api
-    .post("http://localhost:8080/FetchProducts", { product: productName })
+    .post(`${config.SERVER_URL}/FetchProducts`, { product: productName })
     .then((res) => {
       return res;
     })
@@ -13,7 +14,7 @@ export const fetchProducts = (productName) => {
 
 export const loadIntoDatabase = (payload) => {
   return api
-    .post("http://localhost:8080/LoadDatabase", { data: payload })
+    .post(`${config.SERVER_URL}/LoadDatabase`, { data: payload })
     .then((res) => {
       return res;
     })
@@ -24,7 +25,7 @@ export const loadIntoDatabase = (payload) => {
 
 export const fetchSentiment = (payload) => {
   return api
-    .post("http://localhost:8080/FetchSentiment", { data: payload })
+    .post(`${config.SERVER_URL}/FetchSentiment`, { data: payload })
     .then((res) => {
       return res;
     })

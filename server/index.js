@@ -318,7 +318,7 @@ app.post("/login", async (req, res) => {
             accessToken: result.getAccessToken().getJwtToken(),
             idToken: result.getIdToken().getJwtToken(),
             refreshToken: result.getRefreshToken().getToken(),
-            expiryTime: today
+            expiryTime: today,
           },
         });
       },
