@@ -53,7 +53,7 @@ function Dashboard() {
       console.log("In dashboard"+product);
       push(`/product/${product.asin}`, { product });
     } catch (err){
-
+      console.log(err);
     }
     
   };
