@@ -18,7 +18,7 @@ import * as ActionTypes from "common/actionTypes";
 import { ROUTES } from "common/constants";
 import api from "common/api";
 import { config } from "common/config";
-
+import React from "react";
 const { Title } = Typography;
 
 function Login() {
