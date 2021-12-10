@@ -6,7 +6,7 @@ var AWS = require("aws-sdk");
 var router = express.Router();
 const app = express();
 app.use(express.json());
-const port = 80;
+const port = 8080;
 const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
 
 const { appConfig } = require("./config");
