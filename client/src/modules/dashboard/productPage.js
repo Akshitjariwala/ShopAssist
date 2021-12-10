@@ -80,11 +80,11 @@ function ProductPage() {
 
   async function analysisFunc(reviewData) {
     api
-      .post("http://localhost:8080/LoadDatabase", { data: reviewData })
+      .post("http://3.91.200.252:8080/LoadDatabase", { data: reviewData })
       .then((response) => {
         console.log(response.data);
         api
-          .post("http://localhost:8080/FetchSentiment", { data: response.data })
+          .post("http://3.91.200.252:8080/FetchSentiment", { data: response.data })
           .then((sentimentData) => {
             console.log(sentimentData);
             toast({
