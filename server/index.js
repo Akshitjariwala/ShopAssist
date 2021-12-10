@@ -93,7 +93,7 @@ async function fetchProductsFromAPI(productName) {
     });
 
     console.log(reviews);
-    
+
     } catch(err) {
       console.log(err)
     }
@@ -400,5 +400,5 @@ app.post("/resetPassword", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Shop Assist Server : listening on port ${port}`);
+  console.log('Shop Assist Server : listening on port ${port}');
 });
