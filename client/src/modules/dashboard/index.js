@@ -17,6 +17,7 @@ import {
 
 import { toast } from "common/utils";
 import api from "common/api";
+import { config } from "common/config";
 
 function Dashboard() {
   const [loading, setLoading] = useState(false);
@@ -27,11 +28,11 @@ function Dashboard() {
     const { product } = values;
     try {
       setLoading(true);
-      const response = await api.post("http://localhost:8080/FetchProducts", {
+      const response = await api.post(`${config.SERVER_URL}/FetchProducts`, {
         product,
       });
       const { data } = response;
-      setProductList([...data, ...data, ...data] || []);
+      setProductList([...data] || []);
     } catch (err) {
       console.log(err);
       toast({
