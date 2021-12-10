@@ -27,7 +27,7 @@ function Dashboard() {
     const { product } = values;
     try {
       setLoading(true);
-      const response = await api.post("http://localhost:8080/FetchProducts", {
+      const response = await api.post("http://3.91.200.252:8080/FetchProducts", {
         product,
       });
       const { data } = response;
