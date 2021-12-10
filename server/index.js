@@ -93,6 +93,7 @@ async function fetchProductsFromAPI(productName) {
     });
 
     console.log(reviews);
+    
     } catch(err) {
       console.log(err)
     }
