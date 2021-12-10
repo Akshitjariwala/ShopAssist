@@ -1,3 +1,4 @@
+import React from "react";
 import { Button } from "antd";
 import Layout from "antd/lib/layout";
 import { ROUTES } from "common/constants";
