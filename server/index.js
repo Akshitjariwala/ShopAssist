@@ -8,6 +8,7 @@ const app = express();
 app.use(express.json());
 const port = 8080;
 const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
+var product_data_api = require('./constants');
 
 const { appConfig } = require("./config");
 const service = require("./service");
@@ -17,10 +18,10 @@ app.use(cors());
 
 AWS.config.update({
   region: "us-east-1",
-  accessKeyId: "ASIA5YETWBVQ4JZH6Y7E",
-  secretAccessKey: "cslP99qXBfGM5B2ZKT7CFpUKIcKfL9DgdhBVfmMR",
+  accessKeyId: "ASIA5YETWBVQVCILPOL7",
+  secretAccessKey: "+6zhbDSjOuZw/ZEIMZLWFcmmDxFB4ZWVAiCw2YOZ",
   sessionToken:
-    "FwoGZXIvYXdzEB8aDK7MphhrPdCZzgRGgiLBAR8RMiKdi2gaxGCCzb8G1w/z4Dk8lGf96TSK7tVIKHW8AkXk5NNSV8tfOaUUQ9EMyDWRCSKWXKc/hsWKv7RYT2Tua/89rVkuvAmIeRq3Spt/TEVNdO8rmMD/ZcIC4J1aRGd1p7nqtsVCm5DDRDb8UUjlGUMMfBnzgDcjn6RwxGDNft/F+U40h+sOnmRXvpYyrCxwCOIiN3BdWL5pFwi7QyEu/hSJxUnur33/MMS8QBv/9Nwcbzomom9UNGnRAlDTwNsoztjLjQYyLRUoWR8AAiAoOTeembKqWuz9M8f7itiXiJmNShHpNr8pAnGN3Iu/b/m2xFVeLg==",
+    "FwoGZXIvYXdzEDAaDF6Sy1w+2ef6aFzCKSLBAUvBu4jLoUlF0rsmj0URl4Z5ORt4xUgqKiA4yYpJFUvTrW5aXdA6l0JdCHsTqiiCNoPwwk/Bc+yZerR24nI9oCfzHnRnhWuqL52QVC3wKSd+NfnLmi7i1oG8f1tPA6vV1HdraSa8EP99Z9MUxfvE1O9KUA58obwYtPi3U9yuPF16/3exhXnqts6i+lzH6Uhj6eDBcrESbKgMKk1eS+HWFUcQ6JMMJMo2i6P9jemf5EGbGgo4H8fuhGveIdhMQrMarJMo8a/PjQYyLWGMhBRk6JBDbcceo7Kd8HSD6uqs1dWeXUHBM0jVper/KG5rrB64lWT+Yk/KQw==",
 });
 
 var dynamoDB = new AWS.DynamoDB.DocumentClient();
@@ -42,16 +43,19 @@ app.post("/FetchProducts", (req, res) => {
 });
 
 /*async function fetchProductsFromAPI (productName) {
+  const productData = [];
+  try {
   console.log("Fetching products....")
     const products = await amazonScraper.products({ keyword: productName, number: 5 });
     const results = products.result;
-    const productData = [];
+    
     for (var i=0; i<results.length ; i++) {
         let review_list = [];
         const productDetails = {};
         console.log("Fetching reviews....")
-        const reviews = await amazonScraper.reviews({asin:results[i].asin,number:10});
+        const reviews = await amazonScraper.reviews({asin:results[i].asin,number:5});
 
+        productDetails["userID"] = "jonDoe";
         productDetails["asin"] = results[i].asin;
         productDetails["price"] = results[i].price.current_price.toString(); 
         productDetails["reviews_count"] = results[i].reviews.total_reviews.toString();
@@ -68,77 +72,44 @@ app.post("/FetchProducts", (req, res) => {
         productDetails["reviews"] = review_list;
         productData.push(productDetails);
     }
+  } catch (err) {
+    console.log(err);
+  }
     return productData;
 };*/
 
 async function fetchProductsFromAPI(productName) {
   console.log(productName);
-  //const products = await amazonScraper.products({ keyword: productName, number: 50 });
-  const product = {
-    position: { page: 1, position: 1, global_position: 1 },
-    asin: "B07P6Y7954",
-    price: {
-      discounted: false,
-      current_price: 574,
-      currency: "USD",
-      before_price: 0,
-      savings_amount: 0,
-      savings_percent: 0,
-    },
-    reviews: { total_reviews: 317, rating: 4.6 },
-    url: "https://www.amazon.com/dp/B07P6Y7954",
-    score: "1458.20",
-    sponsored: false,
-    amazonChoice: false,
-    bestSeller: false,
-    amazonPrime: false,
-    title:
-      "Newest Flagship Microsoft Xbox One S 1TB HDD Bundle with Two (2X) Wireless Controllers, 1-Month Game Pass Trial, 14-Day Xbox Live Gold Trial - White",
-    thumbnail: "https://m.media-amazon.com/images/I/51-JAEI1jzL._AC_UY218_.jpg",
-  };
-
-  const results = [];
-  results.push(product);
-
-  //const results = products.result;
+  
+  var results = product_data_api.PS4_PRODUCT_DATA;
   const productData = [];
   for (var i = 0; i < results.length; i++) {
     let review_list = [];
     const productDetails = {};
+    try {
     var reviews = await amazonScraper.reviews({
-      asin: "B07P6Y7954",
-      number: 50,
+      asin: results[i].asin,
+      number: 20,
     });
 
-    productDetails["userID"] = "ironman13";
+    console.log(reviews);
+    } catch(err) {
+      console.log(err)
+    }
+    productDetails["userID"] = "akshitjariwala19";
     productDetails["asin"] = results[i].asin;
-    productDetails["price"] = results[i].price.current_price.toString();
-    productDetails["reviews_count"] = results[i].reviews.total_reviews.toString();
-    productDetails["overall_rating"] = results[i].reviews.rating.toString();
+    productDetails["price"] = results[i]["price.current_price"].toString();
+    productDetails["reviews_count"] = results[i]["reviews.total_reviews"].toString();
+    productDetails["overall_rating"] = results[i]["reviews.rating"].toString();
     productDetails["title"] = results[i].title;
     productDetails["thumbnail"] = results[i].thumbnail;
-    //productDetails["stars_stat"] = reviews.stars_stat;
-
-    productDetails["stars_stat"] = { '1' : '6%', '2': '2%', '3': '4%', '4': '11%', '5': '77%' };
+    productDetails["stars_stat"] = reviews.stars_stat;
 
     for (var j = 0; j < reviews.result.length; j++) {
       review_list.push(reviews.result[j].review);
     }
 
-    //productDetails["reviews"] = review_list;
-    
-    productDetails["reviews"] = [
-      'Love the phone - everything’s working well but really needs a guide book .',  
-      'I like everything about it I had to switch back from android to iPhone so I heard the XR was good. I got this refurbished cause it’s cheap.The only thing I dislike no button but I’m getting used to not having a button.',
-      'muy buen celular esta perfecto',
-      'Worked good for me.',
-      'It is too slick for my hand. I’ve dropped it at least four times. Thankfully it has not broken. I don’t think a glass back was a good idea. My finger aren’t very long.',
-      "It arrived fast as you would expect from Amazon. The phone feels good holding it and it responds fast to the touch. So far I'm very happy with it.",
-      'The phone was okay but then once you try to start it; it doesn’t work. The phone is obviously locked and it only works with certain carriers which the seller claims that it works with “all carriers”: FALSE! I have Brent dying to return it but Amazon staff have not be backing me up.',
-      'No issue with product at all. Charger and cable were not stock but exceed expectations for perf and quality.',
-      'I will update this as time goes on, but upon receiving my phone it seems nearly brand new.',
-      'It’s perfect the battery last longer than expected can go almost two days with out charging it'
-  ];
+    productDetails["reviews"] = review_list;
 
     productData.push(productDetails);
   }
