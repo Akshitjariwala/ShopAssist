@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useParams, useHistory } from "react-router-dom";
 import { isEmpty } from "lodash";
 
@@ -54,7 +54,7 @@ function ProductPage() {
   const reviewAnalysis = async () => {
     const reviewAccessData = {
       asin,
-      userID: userId,
+      userID: currentProduct.userID,
     };
     console.log(reviewAccessData);
     try {

@@ -17,10 +17,10 @@ app.use(cors());
 
 AWS.config.update({
   region: "us-east-1",
-  accessKeyId: "ASIA5YETWBVQ5ZT57Z4R",
-  secretAccessKey: "7RmfGfluxwCoDVakD9pURtV11FDKEwjJdOpJkEI9",
+  accessKeyId: "ASIA5YETWBVQ4JZH6Y7E",
+  secretAccessKey: "cslP99qXBfGM5B2ZKT7CFpUKIcKfL9DgdhBVfmMR",
   sessionToken:
-    "FwoGZXIvYXdzEAMaDJiBR8A9fUWVyaF9byLBAVwwmsVSM5OuRowJVnRDSZvE47cUAVtpb81z9rltPv5FLFRSw9E3nA9Zt6AuAKrHL7i+64frudHljXdotqKeoIMhXveUDeb3QxP9F5JTazO7iUsomUB9A9y4bWLtBAOjLtWs37xti7AiPQxsgRldhjEtyjXgsJm5uaNRMy7E1T9FqsAbPAbqJM0o0aUAz4wbHOz7+1duQ428C3SFdq+bSm9il8cIwhXHMvy25GvV8SdplXoZVGqbn2QdohnqJoCwU+0o18PFjQYyLYu5zwOHcJNA90PH263/yRtHWYfzhQk2b/xphTNFBJeS+AiHQCsOoO50leHNYw==",
+    "FwoGZXIvYXdzEB8aDK7MphhrPdCZzgRGgiLBAR8RMiKdi2gaxGCCzb8G1w/z4Dk8lGf96TSK7tVIKHW8AkXk5NNSV8tfOaUUQ9EMyDWRCSKWXKc/hsWKv7RYT2Tua/89rVkuvAmIeRq3Spt/TEVNdO8rmMD/ZcIC4J1aRGd1p7nqtsVCm5DDRDb8UUjlGUMMfBnzgDcjn6RwxGDNft/F+U40h+sOnmRXvpYyrCxwCOIiN3BdWL5pFwi7QyEu/hSJxUnur33/MMS8QBv/9Nwcbzomom9UNGnRAlDTwNsoztjLjQYyLRUoWR8AAiAoOTeembKqWuz9M8f7itiXiJmNShHpNr8pAnGN3Iu/b/m2xFVeLg==",
 });
 
 var dynamoDB = new AWS.DynamoDB.DocumentClient();
@@ -76,7 +76,7 @@ async function fetchProductsFromAPI(productName) {
   //const products = await amazonScraper.products({ keyword: productName, number: 50 });
   const product = {
     position: { page: 1, position: 1, global_position: 1 },
-    asin: "B07XV8C1G5",
+    asin: "B07P6Y7954",
     price: {
       discounted: false,
       current_price: 574,
@@ -105,26 +105,41 @@ async function fetchProductsFromAPI(productName) {
   for (var i = 0; i < results.length; i++) {
     let review_list = [];
     const productDetails = {};
-    const reviews = await amazonScraper.reviews({
+    var reviews = await amazonScraper.reviews({
       asin: "B07P6Y7954",
       number: 50,
     });
 
-    productDetails["userID"] = "ironman12";
+    productDetails["userID"] = "ironman13";
     productDetails["asin"] = results[i].asin;
     productDetails["price"] = results[i].price.current_price.toString();
-    productDetails["reviews_count"] =
-      results[i].reviews.total_reviews.toString();
+    productDetails["reviews_count"] = results[i].reviews.total_reviews.toString();
     productDetails["overall_rating"] = results[i].reviews.rating.toString();
     productDetails["title"] = results[i].title;
     productDetails["thumbnail"] = results[i].thumbnail;
-    productDetails["stars_stat"] = reviews.stars_stat;
+    //productDetails["stars_stat"] = reviews.stars_stat;
+
+    productDetails["stars_stat"] = { '1' : '6%', '2': '2%', '3': '4%', '4': '11%', '5': '77%' };
 
     for (var j = 0; j < reviews.result.length; j++) {
       review_list.push(reviews.result[j].review);
     }
 
-    productDetails["reviews"] = review_list;
+    //productDetails["reviews"] = review_list;
+    
+    productDetails["reviews"] = [
+      'Love the phone - everything’s working well but really needs a guide book .',  
+      'I like everything about it I had to switch back from android to iPhone so I heard the XR was good. I got this refurbished cause it’s cheap.The only thing I dislike no button but I’m getting used to not having a button.',
+      'muy buen celular esta perfecto',
+      'Worked good for me.',
+      'It is too slick for my hand. I’ve dropped it at least four times. Thankfully it has not broken. I don’t think a glass back was a good idea. My finger aren’t very long.',
+      "It arrived fast as you would expect from Amazon. The phone feels good holding it and it responds fast to the touch. So far I'm very happy with it.",
+      'The phone was okay but then once you try to start it; it doesn’t work. The phone is obviously locked and it only works with certain carriers which the seller claims that it works with “all carriers”: FALSE! I have Brent dying to return it but Amazon staff have not be backing me up.',
+      'No issue with product at all. Charger and cable were not stock but exceed expectations for perf and quality.',
+      'I will update this as time goes on, but upon receiving my phone it seems nearly brand new.',
+      'It’s perfect the battery last longer than expected can go almost two days with out charging it'
+  ];
+
     productData.push(productDetails);
   }
 
@@ -134,10 +149,10 @@ async function fetchProductsFromAPI(productName) {
 }
 
 app.post("/LoadDatabase", (req, res) => {
-  console.log(req.body.data.reviewID);
-  console.log(req.body.data.reviewList);
-  const productReviewID = req.body.data.reviewID;
-  const productReviewList = req.body.data.reviewList;
+  console.log(req.body.data.body.reviewID);
+  console.log(req.body.data.body.reviewList);
+  const productReviewID = req.body.data.body.reviewID;
+  const productReviewList = req.body.data.body.reviewList;
 
   var params = {
     TableName: "ProductReview",

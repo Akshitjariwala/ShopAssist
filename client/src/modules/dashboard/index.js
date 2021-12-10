@@ -1,5 +1,6 @@
 import { useState, createElement } from "react";
 import { useHistory } from "react-router-dom";
+import React from 'react';
 
 //! Ant Imports
 
@@ -44,14 +45,17 @@ function Dashboard() {
   };
 
   const handleProductClick = async (product) => {
-    api
-      .post(
+    try {
+      const result = await api.post(
         "https://qtx9upms37.execute-api.us-east-1.amazonaws.com/default/products",
         product
       )
-      .then((result) => {
-        push(`/product/${product.asin}`, { product });
-      });
+      console.log("In dashboard"+product);
+      push(`/product/${product.asin}`, { product });
+    } catch (err){
+
+    }
+    
   };
 
   const IconText = ({ icon, text }) => (
