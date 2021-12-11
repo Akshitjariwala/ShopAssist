@@ -3,8 +3,9 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 //! User Files
 
+import * as ActionTypes from "common/actionTypes";
 import { AppContext } from "AppContext";
-import { ROUTES } from "common/constants";
+import { ROUTES, USER } from "common/constants";
 import App from "app/App";
 import Login from "modules/auth/Login";
 import Logout from "modules/auth/Logout";
@@ -16,10 +17,18 @@ import ResetPassword from "modules/auth/ResetPassword";
 import ResendConfirmationCode from "modules/auth/ResendConfirmationCode";
 
 const Routes = () => {
-  const { initializeAuth } = useContext(AppContext);
+  const { initializeAuth, dispatch } = useContext(AppContext);
 
   useEffect(() => {
     initializeAuth();
+    if (localStorage.getItem(USER)) {
+      const user = JSON.parse(localStorage.getItem(USER));
+      const expiryTime = user.expiryTime;
+      const currentTime = Date.now();
+      if (expiryTime < currentTime) {
+        dispatch({ type: ActionTypes.LOGOUT });
+      }
+    }
     // eslint-disable-next-line
   }, []);
 

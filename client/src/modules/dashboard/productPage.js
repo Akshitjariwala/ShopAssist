@@ -1,10 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useParams, useHistory } from "react-router-dom";
 import { isEmpty } from "lodash";
 
 //! Ant Imports
 
-import { List, Button, Descriptions, Typography } from "antd";
+import { List, Button, Descriptions, Typography, Modal, Progress } from "antd";
 
 //! User Files
 
@@ -13,16 +13,19 @@ import api from "common/api";
 import { AppContext } from "AppContext";
 import { ROUTES } from "common/constants";
 import { toast } from "common/utils";
+import { config } from "common/config";
 
 const { Title, Text } = Typography;
 
 function ProductPage() {
   const {
+    // eslint-disable-next-line
     state: { userId },
   } = useContext(AppContext);
   const { push } = useHistory();
   const [productTitle, setProductTitle] = useState("");
   const [currentProduct, setCurrentProduct] = useState({});
+  const [analysisLoading, setAnalysisLoading] = useState(false);
   const { asin } = useParams();
   const location = useLocation();
 
@@ -37,29 +40,121 @@ function ProductPage() {
     // eslint-disable-next-line
   }, []);
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isAnalysisModalVisible, setIsAnalysisModalVisible] = useState(false);
+  const [sentimentData, setSentimentData] = useState({});
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const showAnalysisModal = () => {
+    reviewAnalysis();
+    setIsAnalysisModalVisible(true);
+  };
+
+  const handleAnalysisOk = () => {
+    setIsAnalysisModalVisible(false);
+  };
+
+  const handleAnalysisCancel = () => {
+    setIsAnalysisModalVisible(false);
+  };
+
   const reviewAnalysis = async () => {
     const reviewAccessData = {
       asin,
-      userID: userId,
+      userID: currentProduct.userID,
     };
+    // console.log(reviewAccessData);
     try {
-      const response = await api.post(
-        "https://7jjweip03i.execute-api.us-east-1.amazonaws.com/default/reviewanalysis",
-        reviewAccessData
-      );
-      const { data } = response;
-      toast({
-        message: `Sentiment review of this product: ${
-          data?.body ? data.body : "Unknown"
-        }`,
-        type: "info",
-      });
+      api
+        .post(
+          "https://7jjweip03i.execute-api.us-east-1.amazonaws.com/default/reviewanalysis",
+          reviewAccessData
+        )
+        .then((response) => {
+          analysisFunc(response.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } catch (err) {
       toast({
         message: err.message,
         type: "error",
       });
     }
+  };
+
+  async function analysisFunc(reviewData) {
+    setAnalysisLoading(true);
+    api
+      .post(`${config.SERVER_URL}/LoadDatabase`, { data: reviewData })
+      .then((response) => {
+        api
+          .post(`${config.SERVER_URL}/FetchSentiment`, { data: response.data })
+          .then((sentimentData) => {
+            setAnalysisLoading(false);
+            console.log(sentimentData);
+            setSentimentData(sentimentData?.data.Items[0]);
+            toast({
+              message: `Sentiment review of this product: ${
+                sentimentData?.data.Items[0].overallSentiment
+                  ? sentimentData?.data.Items[0].overallSentiment
+                  : "Unknown"
+              }`,
+              type: "info",
+            });
+          })
+          .catch((err) => {
+            setAnalysisLoading(false);
+            console.log(err);
+          });
+      });
+  }
+
+  const SentimentGraph = ({ sentimentsData }) => {
+    const {
+      mixedSentiment,
+      negativeSentiment,
+      neutralSentiment,
+      positiveSentiment,
+    } = sentimentData;
+    const totalReviews = currentProduct.reviews.length;
+    return (
+      <div>
+        Mixed Sentiment
+        <Progress percent={parseInt((mixedSentiment / totalReviews) * 100)} />
+        <br />
+        <br />
+        Negative Sentiment
+        <Progress
+          percent={parseInt((negativeSentiment / totalReviews) * 100)}
+        />
+        <br />
+        <br />
+        Neutral Sentiment
+        <Progress percent={parseInt((neutralSentiment / totalReviews) * 100)} />
+        <br />
+        <br />
+        Positive Sentiment
+        <Progress
+          percent={parseInt((positiveSentiment / totalReviews) * 100)}
+        />
+        <br />
+        <br />
+        Overall Sentiment: {sentimentData.overallSentiment}
+      </div>
+    );
   };
 
   return (
@@ -71,11 +166,58 @@ function ProductPage() {
               Product Info
             </Title>
             <div className="acc-btn">
-              <Button type="primary" onClick={reviewAnalysis}>
+              <Button
+                type="primary"
+                // loading={analysisLoading}
+                onClick={showAnalysisModal}
+              >
                 Review Analysis
               </Button>
+              <Modal
+                title="Sentiment Analysis of Reviews"
+                visible={isAnalysisModalVisible}
+                onOk={handleAnalysisOk}
+                onCancel={handleAnalysisCancel}
+              >
+                {analysisLoading ? (
+                  "Loading..."
+                ) : (
+                  <SentimentGraph sentimentsData={sentimentData} />
+                )}
+              </Modal>
               {/* <h4>{overallSentiment}</h4> */}
-              <Button type="primary">Rating Visualization</Button>
+              <Button type="primary" onClick={showModal}>
+                Rating Visualization
+              </Button>
+              <Modal
+                title="Rating"
+                visible={isModalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+              >
+                {currentProduct?.stars_stat ? (
+                  <Descriptions.Item
+                    label={<Text className="sdp-text-strong">Ratings</Text>}
+                    span={3}
+                  >
+                    {Object.values(currentProduct?.stars_stat).map(
+                      (rating, i) => {
+                        return (
+                          <>
+                            {i + 1}
+                            <></>
+                            <Progress
+                              percent={rating.substr(0, rating.length - 1)}
+                            />
+                          </>
+                        );
+                      }
+                    )}
+                  </Descriptions.Item>
+                ) : (
+                  "No stats to show"
+                )}
+              </Modal>
             </div>
           </div>
         }
@@ -110,16 +252,6 @@ function ProductPage() {
         >
           {currentProduct?.reviews_count}
         </Descriptions.Item>
-        {/* {currentProduct?.stars_stat && (
-          <Descriptions.Item
-            label={<Text className="sdp-text-strong">Ratings</Text>}
-            span={3}
-          >
-            {Object.values(currentProduct?.stars_stat).map((rating) => {
-              return <Progress percent={rating.substr(0, rating.length - 1)} />;
-            })}
-          </Descriptions.Item>
-        )} */}
         <Descriptions.Item
           label={<Text className="sdp-text-strong">Reviews</Text>}
           span={3}

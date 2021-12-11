@@ -36,7 +36,6 @@
     "workbox-routing": "6.1.5",
     "workbox-strategies": "6.1.5"
   },
-  "proxy": "http://localhost:8080",
   "devDependencies": {
     "babel-plugin-import": "1.13.3",
     "cross-env": "7.0.3",

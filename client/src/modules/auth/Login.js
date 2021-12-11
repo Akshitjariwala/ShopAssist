@@ -1,4 +1,4 @@
-import React,{ useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 
@@ -18,6 +18,7 @@ import * as ActionTypes from "common/actionTypes";
 import { ROUTES } from "common/constants";
 import api from "common/api";
 import { config } from "common/config";
+import moment from "moment";
 
 const { Title } = Typography;
 
@@ -39,7 +40,7 @@ function Login() {
       const { data } = response;
       if (data.status === "success") {
         const {
-          result: { accessToken, idToken },
+          result: { accessToken, idToken, expiryTime },
         } = data;
         const decoded = jwtDecode(idToken);
         const currentUser = {
@@ -49,6 +50,7 @@ function Login() {
           emailVerified: decoded.email_verified,
           idToken,
           accessToken,
+          expiryTime: moment(expiryTime).valueOf(),
         };
         dispatch({ type: ActionTypes.SET_ID_TOKEN, data: idToken });
         dispatch({ type: ActionTypes.SET_ACCESS_TOKEN, data: accessToken });

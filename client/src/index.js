@@ -1,5 +1,5 @@
+import React from "react";
 import ReactDOM from "react-dom";
-import React from 'react';
 
 //! User Files
 
@@ -12,8 +12,6 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
 import "./index.css";
 import "./styles/main.less";
-
-
 
 ReactDOM.render(
   <AppContextProvider>
