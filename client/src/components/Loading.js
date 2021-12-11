@@ -1,5 +1,7 @@
+import React from "react";
+
 //! Ant Imports
-import React from 'react';
+
 import Spin from "antd/lib/spin";
 
 //! Ant Icons
