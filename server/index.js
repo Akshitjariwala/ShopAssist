@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 const port = 8080;
 const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
-var product_data_api = require('./constants');
+var product_data_api = require("./constants");
 
 const { appConfig } = require("./config");
 const service = require("./service");
@@ -37,7 +37,8 @@ app.use(cors(corsOptions));
 
 app.post("/FetchProducts", (req, res) => {
   const productName = req.body.product;
-  fetchProductsFromAPI(productName).then((result) => {
+  const userId = req.body.userId;
+  fetchProductsFromAPI(productName, userId).then((result) => {
     res.status(200).send(result);
   });
 });
@@ -78,29 +79,29 @@ app.post("/FetchProducts", (req, res) => {
     return productData;
 };*/
 
-async function fetchProductsFromAPI(productName) {
+async function fetchProductsFromAPI(productName, userId) {
   console.log(productName);
-  
+
   var results = product_data_api.PS4_PRODUCT_DATA;
   const productData = [];
   for (var i = 0; i < results.length; i++) {
     let review_list = [];
     const productDetails = {};
     try {
-    var reviews = await amazonScraper.reviews({
-      asin: results[i].asin,
-      number: 20,
-    });
+      var reviews = await amazonScraper.reviews({
+        asin: results[i].asin,
+        number: 20,
+      });
 
-    console.log(reviews);
-
-    } catch(err) {
-      console.log(err)
+      console.log(reviews);
+    } catch (err) {
+      console.log(err);
     }
-    productDetails["userID"] = "akshitjariwala21";
+    productDetails["userID"] = userId;
     productDetails["asin"] = results[i].asin;
     productDetails["price"] = results[i]["price.current_price"].toString();
-    productDetails["reviews_count"] = results[i]["reviews.total_reviews"].toString();
+    productDetails["reviews_count"] =
+      results[i]["reviews.total_reviews"].toString();
     productDetails["overall_rating"] = results[i]["reviews.rating"].toString();
     productDetails["title"] = results[i].title;
     productDetails["thumbnail"] = results[i].thumbnail;
@@ -400,5 +401,5 @@ app.post("/resetPassword", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log('Shop Assist Server : listening on port ${port}');
+  console.log("Shop Assist Server : listening on port ${port}");
 });

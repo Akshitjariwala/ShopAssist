@@ -1,4 +1,4 @@
-import React, { useState, createElement } from "react";
+import React, { useState, createElement, useContext } from "react";
 import { useHistory } from "react-router-dom";
 
 //! Ant Imports
@@ -18,8 +18,12 @@ import {
 import { toast } from "common/utils";
 import api from "common/api";
 import { config } from "common/config";
+import { AppContext } from "AppContext";
 
 function Dashboard() {
+  const {
+    state: { userId },
+  } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
   const [productList, setProductList] = useState([]);
   const { push } = useHistory();
@@ -30,6 +34,7 @@ function Dashboard() {
       setLoading(true);
       const response = await api.post(`${config.SERVER_URL}/FetchProducts`, {
         product,
+        userId,
       });
       const { data } = response;
       setProductList([...data] || []);
@@ -50,13 +55,12 @@ function Dashboard() {
       const result = await api.post(
         "https://qtx9upms37.execute-api.us-east-1.amazonaws.com/default/products",
         product
-      )
-      console.log("In dashboard"+product);
+      );
+      console.log("In dashboard" + product);
       push(`/product/${product.asin}`, { product });
-    } catch (err){
+    } catch (err) {
       console.log(err);
     }
-    
   };
 
   const IconText = ({ icon, text }) => (
