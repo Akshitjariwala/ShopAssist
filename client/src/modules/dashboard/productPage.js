@@ -19,6 +19,7 @@ const { Title, Text } = Typography;
 
 function ProductPage() {
   const {
+  // eslint-disable-next-line
     state: { userId },
   } = useContext(AppContext);
   const { push } = useHistory();
@@ -55,7 +56,7 @@ function ProductPage() {
   const reviewAnalysis = async () => {
     const reviewAccessData = {
       asin,
-      userID: userId,
+      userID: currentProduct.userID,
     };
     console.log(reviewAccessData);
     try {
@@ -83,6 +84,7 @@ function ProductPage() {
     api
       .post(`${config.SERVER_URL}/LoadDatabase`, { data: reviewData })
       .then((response) => {
+        console.log(response);
         console.log(response.data);
         api
           .post(`${config.SERVER_URL}/FetchSentiment`, { data: response.data })

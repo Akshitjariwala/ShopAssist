@@ -8,6 +8,7 @@ const app = express();
 app.use(express.json());
 const port = 8080;
 const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
+var product_data_api = require('./constants');
 
 const { appConfig } = require("./config");
 const service = require("./service");
@@ -17,10 +18,10 @@ app.use(cors());
 
 AWS.config.update({
   region: "us-east-1",
-  accessKeyId: "ASIA5YETWBVQ5ZT57Z4R",
-  secretAccessKey: "7RmfGfluxwCoDVakD9pURtV11FDKEwjJdOpJkEI9",
+  accessKeyId: "ASIA5YETWBVQVCILPOL7",
+  secretAccessKey: "+6zhbDSjOuZw/ZEIMZLWFcmmDxFB4ZWVAiCw2YOZ",
   sessionToken:
-    "FwoGZXIvYXdzEAMaDJiBR8A9fUWVyaF9byLBAVwwmsVSM5OuRowJVnRDSZvE47cUAVtpb81z9rltPv5FLFRSw9E3nA9Zt6AuAKrHL7i+64frudHljXdotqKeoIMhXveUDeb3QxP9F5JTazO7iUsomUB9A9y4bWLtBAOjLtWs37xti7AiPQxsgRldhjEtyjXgsJm5uaNRMy7E1T9FqsAbPAbqJM0o0aUAz4wbHOz7+1duQ428C3SFdq+bSm9il8cIwhXHMvy25GvV8SdplXoZVGqbn2QdohnqJoCwU+0o18PFjQYyLYu5zwOHcJNA90PH263/yRtHWYfzhQk2b/xphTNFBJeS+AiHQCsOoO50leHNYw==",
+    "FwoGZXIvYXdzEDAaDF6Sy1w+2ef6aFzCKSLBAUvBu4jLoUlF0rsmj0URl4Z5ORt4xUgqKiA4yYpJFUvTrW5aXdA6l0JdCHsTqiiCNoPwwk/Bc+yZerR24nI9oCfzHnRnhWuqL52QVC3wKSd+NfnLmi7i1oG8f1tPA6vV1HdraSa8EP99Z9MUxfvE1O9KUA58obwYtPi3U9yuPF16/3exhXnqts6i+lzH6Uhj6eDBcrESbKgMKk1eS+HWFUcQ6JMMJMo2i6P9jemf5EGbGgo4H8fuhGveIdhMQrMarJMo8a/PjQYyLWGMhBRk6JBDbcceo7Kd8HSD6uqs1dWeXUHBM0jVper/KG5rrB64lWT+Yk/KQw==",
 });
 
 var dynamoDB = new AWS.DynamoDB.DocumentClient();
@@ -42,16 +43,19 @@ app.post("/FetchProducts", (req, res) => {
 });
 
 /*async function fetchProductsFromAPI (productName) {
+  const productData = [];
+  try {
   console.log("Fetching products....")
     const products = await amazonScraper.products({ keyword: productName, number: 5 });
     const results = products.result;
-    const productData = [];
+    
     for (var i=0; i<results.length ; i++) {
         let review_list = [];
         const productDetails = {};
         console.log("Fetching reviews....")
-        const reviews = await amazonScraper.reviews({asin:results[i].asin,number:10});
+        const reviews = await amazonScraper.reviews({asin:results[i].asin,number:5});
 
+        productDetails["userID"] = "jonDoe";
         productDetails["asin"] = results[i].asin;
         productDetails["price"] = results[i].price.current_price.toString(); 
         productDetails["reviews_count"] = results[i].reviews.total_reviews.toString();
@@ -68,54 +72,36 @@ app.post("/FetchProducts", (req, res) => {
         productDetails["reviews"] = review_list;
         productData.push(productDetails);
     }
+  } catch (err) {
+    console.log(err);
+  }
     return productData;
 };*/
 
 async function fetchProductsFromAPI(productName) {
   console.log(productName);
-  //const products = await amazonScraper.products({ keyword: productName, number: 50 });
-  const product = {
-    position: { page: 1, position: 1, global_position: 1 },
-    asin: "B07XV8C1G5",
-    price: {
-      discounted: false,
-      current_price: 574,
-      currency: "USD",
-      before_price: 0,
-      savings_amount: 0,
-      savings_percent: 0,
-    },
-    reviews: { total_reviews: 317, rating: 4.6 },
-    url: "https://www.amazon.com/dp/B07P6Y7954",
-    score: "1458.20",
-    sponsored: false,
-    amazonChoice: false,
-    bestSeller: false,
-    amazonPrime: false,
-    title:
-      "Newest Flagship Microsoft Xbox One S 1TB HDD Bundle with Two (2X) Wireless Controllers, 1-Month Game Pass Trial, 14-Day Xbox Live Gold Trial - White",
-    thumbnail: "https://m.media-amazon.com/images/I/51-JAEI1jzL._AC_UY218_.jpg",
-  };
-
-  const results = [];
-  results.push(product);
-
-  //const results = products.result;
+  
+  var results = product_data_api.PS4_PRODUCT_DATA;
   const productData = [];
   for (var i = 0; i < results.length; i++) {
     let review_list = [];
     const productDetails = {};
-    const reviews = await amazonScraper.reviews({
-      asin: "B07P6Y7954",
-      number: 50,
+    try {
+    var reviews = await amazonScraper.reviews({
+      asin: results[i].asin,
+      number: 20,
     });
 
-    productDetails["userID"] = "ironman12";
+    console.log(reviews);
+
+    } catch(err) {
+      console.log(err)
+    }
+    productDetails["userID"] = "akshitjariwala21";
     productDetails["asin"] = results[i].asin;
-    productDetails["price"] = results[i].price.current_price.toString();
-    productDetails["reviews_count"] =
-      results[i].reviews.total_reviews.toString();
-    productDetails["overall_rating"] = results[i].reviews.rating.toString();
+    productDetails["price"] = results[i]["price.current_price"].toString();
+    productDetails["reviews_count"] = results[i]["reviews.total_reviews"].toString();
+    productDetails["overall_rating"] = results[i]["reviews.rating"].toString();
     productDetails["title"] = results[i].title;
     productDetails["thumbnail"] = results[i].thumbnail;
     productDetails["stars_stat"] = reviews.stars_stat;
@@ -125,6 +111,7 @@ async function fetchProductsFromAPI(productName) {
     }
 
     productDetails["reviews"] = review_list;
+
     productData.push(productDetails);
   }
 
@@ -134,10 +121,10 @@ async function fetchProductsFromAPI(productName) {
 }
 
 app.post("/LoadDatabase", (req, res) => {
-  console.log(req.body.data.reviewID);
-  console.log(req.body.data.reviewList);
-  const productReviewID = req.body.data.reviewID;
-  const productReviewList = req.body.data.reviewList;
+  console.log(req.body.data.body.reviewID);
+  console.log(req.body.data.body.reviewList);
+  const productReviewID = req.body.data.body.reviewID;
+  const productReviewList = req.body.data.body.reviewList;
 
   var params = {
     TableName: "ProductReview",
@@ -413,5 +400,5 @@ app.post("/resetPassword", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Shop Assist Server : listening on port ${port}`);
+  console.log('Shop Assist Server : listening on port ${port}');
 });
