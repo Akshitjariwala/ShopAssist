@@ -1,6 +1,5 @@
 import React, { useState, createElement } from "react";
 import { useHistory } from "react-router-dom";
-import React from 'react';
 
 //! Ant Imports
 
@@ -47,6 +46,7 @@ function Dashboard() {
 
   const handleProductClick = async (product) => {
     try {
+      // eslint-disable-next-line
       const result = await api.post(
         "https://qtx9upms37.execute-api.us-east-1.amazonaws.com/default/products",
         product
@@ -65,7 +65,7 @@ function Dashboard() {
       {text}
     </Space>
   );
-  
+
   return (
     <div className="dashboard">
       <Form

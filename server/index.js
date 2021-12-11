@@ -97,7 +97,7 @@ async function fetchProductsFromAPI(productName) {
     } catch(err) {
       console.log(err)
     }
-    productDetails["userID"] = "akshitjariwala19";
+    productDetails["userID"] = "akshitjariwala21";
     productDetails["asin"] = results[i].asin;
     productDetails["price"] = results[i]["price.current_price"].toString();
     productDetails["reviews_count"] = results[i]["reviews.total_reviews"].toString();

@@ -6,7 +6,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   const { getAccessToken } = useContext(AppContext);
   const accessToken = getAccessToken();
   return (
-    <Route
+    <Route  
       {...rest}
       render={(props) =>
         !accessToken ? <Redirect to="/login" /> : <Component {...props} />
