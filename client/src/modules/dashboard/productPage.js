@@ -13,6 +13,7 @@ import api from "common/api";
 import { AppContext } from "AppContext";
 import { ROUTES } from "common/constants";
 import { toast } from "common/utils";
+import { config } from "common/config";
 
 const { Title, Text } = Typography;
 
@@ -80,11 +81,11 @@ function ProductPage() {
 
   async function analysisFunc(reviewData) {
     api
-      .post("http://localhost:8080/LoadDatabase", { data: reviewData })
+      .post(`${config.SERVER_URL}/LoadDatabase`, { data: reviewData })
       .then((response) => {
         console.log(response.data);
         api
-          .post("http://localhost:8080/FetchSentiment", { data: response.data })
+          .post(`${config.SERVER_URL}/FetchSentiment`, { data: response.data })
           .then((sentimentData) => {
             console.log(sentimentData);
             toast({
