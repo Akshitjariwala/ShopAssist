@@ -22,7 +22,7 @@ import { AppContext } from "AppContext";
 
 function Dashboard() {
   const {
-    state: { userId },
+    state: { currentUser },
   } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
   const [productList, setProductList] = useState([]);
@@ -34,7 +34,7 @@ function Dashboard() {
       setLoading(true);
       const response = await api.post(`${config.SERVER_URL}/FetchProducts`, {
         product,
-        userId,
+        userId: currentUser.email,
       });
       const { data } = response;
       setProductList([...data] || []);
@@ -52,11 +52,10 @@ function Dashboard() {
   const handleProductClick = async (product) => {
     try {
       // eslint-disable-next-line
-      const result = await api.post(
-        "https://qtx9upms37.execute-api.us-east-1.amazonaws.com/default/products",
-        product
-      );
-      console.log("In dashboard" + product);
+      // const result = await api.post(
+      //   "https://qtx9upms37.execute-api.us-east-1.amazonaws.com/default/products",
+      //   product
+      // );
       push(`/product/${product.asin}`, { product });
     } catch (err) {
       console.log(err);
@@ -125,7 +124,7 @@ function Dashboard() {
                     key="list-vertical-message"
                   />,
                 ]}
-                extra={<img width={272} alt="logo" src={item.thumbnail} />}
+                extra={<img height={150} alt="logo" src={item.thumbnail} />}
               >
                 <List.Item.Meta
                   title={

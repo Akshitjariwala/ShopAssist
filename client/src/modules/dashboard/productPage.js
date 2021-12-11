@@ -19,12 +19,13 @@ const { Title, Text } = Typography;
 
 function ProductPage() {
   const {
-  // eslint-disable-next-line
+    // eslint-disable-next-line
     state: { userId },
   } = useContext(AppContext);
   const { push } = useHistory();
   const [productTitle, setProductTitle] = useState("");
   const [currentProduct, setCurrentProduct] = useState({});
+  const [analysisLoading, setAnalysisLoading] = useState(false);
   const { asin } = useParams();
   const location = useLocation();
 
@@ -40,6 +41,8 @@ function ProductPage() {
   }, []);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isAnalysisModalVisible, setIsAnalysisModalVisible] = useState(false);
+  const [sentimentData, setSentimentData] = useState({});
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -53,12 +56,25 @@ function ProductPage() {
     setIsModalVisible(false);
   };
 
+  const showAnalysisModal = () => {
+    reviewAnalysis();
+    setIsAnalysisModalVisible(true);
+  };
+
+  const handleAnalysisOk = () => {
+    setIsAnalysisModalVisible(false);
+  };
+
+  const handleAnalysisCancel = () => {
+    setIsAnalysisModalVisible(false);
+  };
+
   const reviewAnalysis = async () => {
     const reviewAccessData = {
       asin,
       userID: currentProduct.userID,
     };
-    console.log(reviewAccessData);
+    // console.log(reviewAccessData);
     try {
       api
         .post(
@@ -66,7 +82,6 @@ function ProductPage() {
           reviewAccessData
         )
         .then((response) => {
-          console.log(response.data);
           analysisFunc(response.data);
         })
         .catch((err) => {
@@ -81,15 +96,16 @@ function ProductPage() {
   };
 
   async function analysisFunc(reviewData) {
+    setAnalysisLoading(true);
     api
       .post(`${config.SERVER_URL}/LoadDatabase`, { data: reviewData })
       .then((response) => {
-        console.log(response);
-        console.log(response.data);
         api
           .post(`${config.SERVER_URL}/FetchSentiment`, { data: response.data })
           .then((sentimentData) => {
+            setAnalysisLoading(false);
             console.log(sentimentData);
+            setSentimentData(sentimentData?.data.Items[0]);
             toast({
               message: `Sentiment review of this product: ${
                 sentimentData?.data.Items[0].overallSentiment
@@ -100,10 +116,46 @@ function ProductPage() {
             });
           })
           .catch((err) => {
+            setAnalysisLoading(false);
             console.log(err);
           });
       });
   }
+
+  const SentimentGraph = ({ sentimentsData }) => {
+    const {
+      mixedSentiment,
+      negativeSentiment,
+      neutralSentiment,
+      positiveSentiment,
+    } = sentimentData;
+    const totalReviews = currentProduct.reviews.length;
+    return (
+      <div>
+        Mixed Sentiment
+        <Progress percent={parseInt((mixedSentiment / totalReviews) * 100)} />
+        <br />
+        <br />
+        Negative Sentiment
+        <Progress
+          percent={parseInt((negativeSentiment / totalReviews) * 100)}
+        />
+        <br />
+        <br />
+        Neutral Sentiment
+        <Progress percent={parseInt((neutralSentiment / totalReviews) * 100)} />
+        <br />
+        <br />
+        Positive Sentiment
+        <Progress
+          percent={parseInt((positiveSentiment / totalReviews) * 100)}
+        />
+        <br />
+        <br />
+        Overall Sentiment: {sentimentData.overallSentiment}
+      </div>
+    );
+  };
 
   return (
     <div className="product-info">
@@ -114,9 +166,25 @@ function ProductPage() {
               Product Info
             </Title>
             <div className="acc-btn">
-              <Button type="primary" onClick={reviewAnalysis}>
+              <Button
+                type="primary"
+                // loading={analysisLoading}
+                onClick={showAnalysisModal}
+              >
                 Review Analysis
               </Button>
+              <Modal
+                title="Sentiment Analysis of Reviews"
+                visible={isAnalysisModalVisible}
+                onOk={handleAnalysisOk}
+                onCancel={handleAnalysisCancel}
+              >
+                {analysisLoading ? (
+                  "Loading..."
+                ) : (
+                  <SentimentGraph sentimentsData={sentimentData} />
+                )}
+              </Modal>
               {/* <h4>{overallSentiment}</h4> */}
               <Button type="primary" onClick={showModal}>
                 Rating Visualization

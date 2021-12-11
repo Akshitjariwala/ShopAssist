@@ -92,8 +92,6 @@ async function fetchProductsFromAPI(productName, userId) {
         asin: results[i].asin,
         number: 20,
       });
-
-      console.log(reviews);
     } catch (err) {
       console.log(err);
     }
@@ -115,15 +113,12 @@ async function fetchProductsFromAPI(productName, userId) {
 
     productData.push(productDetails);
   }
-
-  console.log(productData);
-
   return productData;
 }
 
 app.post("/LoadDatabase", (req, res) => {
-  console.log(req.body.data.body.reviewID);
-  console.log(req.body.data.body.reviewList);
+  // console.log(req.body.data.body.reviewID);
+  // console.log(req.body.data.body.reviewList);
   const productReviewID = req.body.data.body.reviewID;
   const productReviewList = req.body.data.body.reviewList;
 
@@ -145,8 +140,8 @@ app.post("/LoadDatabase", (req, res) => {
 
 app.post("/FetchSentiment", (req, res) => {
   const sentimentID = req.body.data;
-  console.log("In Fetch sentiment function.");
-  console.log(sentimentID);
+  // console.log("In Fetch sentiment function.");
+  // console.log(sentimentID);
 
   var params = {
     TableName: "sentimentTable",
@@ -173,7 +168,7 @@ const poolData = {
 const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
 app.post("/signUp", async (req, res) => {
-  console.log("signup", req);
+  // console.log("signup", req);
   let name = req.body.email;
   let email = req.body.email;
   let password = req.body.password;
@@ -339,7 +334,7 @@ app.post("/forgotPassword", async (req, res) => {
 
     cognitoUser.forgotPassword({
       onSuccess: function (result) {
-        console.log("call result: " + result);
+        // console.log("call result: " + result);
         res.json({
           statusCode: 200,
           status: "success",
@@ -401,5 +396,5 @@ app.post("/resetPassword", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log("Shop Assist Server : listening on port ${port}");
+  console.log(`Shop Assist Server : listening on port ${port}`);
 });
