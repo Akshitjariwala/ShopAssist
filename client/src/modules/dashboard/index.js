@@ -52,10 +52,10 @@ function Dashboard() {
   const handleProductClick = async (product) => {
     try {
       // eslint-disable-next-line
-      // const result = await api.post(
-      //   "https://qtx9upms37.execute-api.us-east-1.amazonaws.com/default/products",
-      //   product
-      // );
+      const result = await api.post(
+        "https://qtx9upms37.execute-api.us-east-1.amazonaws.com/default/products",
+        product
+      );
       push(`/product/${product.asin}`, { product });
     } catch (err) {
       console.log(err);
